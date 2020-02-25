@@ -1,33 +1,45 @@
 version: '3.7'
 
 services:
-  mqtt:
-    container_name: hldf_docker_mqtt_mosquitto_${ENVTYPE}
-    hostname: hldf_mqtt_mosquitto_${ENVTYPE}
-    image: ansi/mosquitto:latest
-    networks:
-      - monica_hldfad_net
-    ports:
-      - '${MQTT_DOCKER_EXPOSED_PORT_MESSAGES}:1883'
-      - '${MQTT_DOCKER_EXPOSED_PORT_DIAGNOSTIC}:9001'
-    expose:
-      - '${MQTT_DOCKER_EXPOSED_PORT_MESSAGES}'
-      - '${MQTT_DOCKER_EXPOSED_PORT_DIAGNOSTIC}'
-    entrypoint: /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
-    environment:
-      - MOSQUITTO_MQTT_URL=mqtt
-      - MOSQUITTO_USERNAME=${MOSQUITTO_USERNAME_VALUE}
-      - MOSQUITTO_PASSWORD=${MOSQUITTO_PASSWORD_VALUE}
+  servicecatalog:
+    container_name: gostemul_docker_web_${ENVTYPE}
+    hostname: gostemul_host_web_${ENVTYPE}
+    restart: always
+    image: monicaproject/servicecatalogemulator:00.00.00.01
     volumes:
-      - ./images/mosquitto:/etc/mosquitto:ro
-      - ./images/mosquitto/auth:/etc/mosquitto/auth
-      - ./images/mosquitto/logs:/var/log/mosquitto:rw
-      - ./images/mosquitto/data:/mosquitto/data/
-  worker:
+      - ./images/web/logs:/logs/
     links:
       - posgresql
     depends_on:
       - posgresql
+    ports:
+      - '${WEB_GOST_PORT}:8000'
+      - '${WEB_DIAGNOSTIC_PORT}:3001'
+    environment:
+      LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
+      EXPOSED_MQTT_HOST: ${V_LOCALHOST_MACHINE}
+      EXPOSED_MQTT_PORT: ${MQTT_QUEUE_PORT}
+      GOST_THINGID_SFN: ${GOST_THINGID_SFN_VALUE}
+      GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
+      DB_NAME: ${PGSQL_DATABASE}
+      DB_USER: ${PGSQL_USER}
+      DB_PASSWORD: ${PGSQL_PASSWORD}
+      DB_PORT_5432_TCP_ADDR: posgresql
+      DB_PORT_5432_TCP_PORT: 5432
+    networks:
+      - monica_hldfad_net
+
+  worker:
+    links:
+      - posgresql
+      - servicecatalog
+    depends_on:
+      - posgresql
+      - servicecatalog
+    environment:
+      WP6_CATALOG_CONNECTIONURL: servicecatalog
+      WP6_CATALOG_CONNECTIONPORT: 8000
+      
   posgresql:
     hostname: hldf_host_posgresql_${ENVTYPE}
     container_name: hldf_docker_posgresql_${ENVTYPE}
@@ -56,16 +68,64 @@ services:
     - portainer_data:/data
     networks:
     - monica_hldfad_net
-
-  flower:
-    container_name: hldf_docker_flower_${ENVTYPE}
-    hostname: hldf_host_flower_${ENVTYPE}
-    image: mher/flower
-    command: ["flower", "--broker=redis://redis:6379/0", "--port=8888"]
-    ports:
-    - ${FLOWER_DOCKER_PORT}:8888
+    
+  #Celery worker
+  worker_emulator:
+    container_name: gostemul_docker_celery_worker_${ENVTYPE}
+    hostname: gostemul_host_celery_worker_${ENVTYPE}
+    image: monicaproject/hldf_gostemulator_worker:00.00.00.01
+    volumes:
+      - ./images/emul_celery/logs:/logs/
+      - ./images/emul_celery/var/run/celery:/var/run/celery
     networks:
       - monica_hldfad_net
+    environment:
+        MQTT_BROKER_IP_ADDRESS: mosquitto
+        MQTT_BROKER_USERNAME: ${MOSQUITTO_USERNAME_VALUE}
+        MQTT_BROKER_PASSWORD: ${MOSQUITTO_PASSWORD_VALUE}
+        MQTT_BROKER_CLIENTID: ${MOSQUITTO_CLIENT_ID_VALUE}
+        DJANGO_SETTINGS_MODULE: shared.settings.appglobalconf
+        RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+        RABBITMQ_HOSTNAME: rabbit
+        CACHEREDIS_DEFAULT_HOSTNAME: redis
+        CACHEREDIS_DEFAULT_PORT: 6379
+        GOST_THINGID_SFN: ${GOST_THINGID_SFN_VALUE}
+        GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
+        CROWDDENSITYEMULATION_PEOPLECOUNT_MINNUMBER: ${CROWDDENSITYEMULATION_PEOPLECOUNT_MINNUMBER_VALUE}
+        CROWDDENSITYEMULATION_PEOPLECOUNT_MAXNUMBER: ${CROWDDENSITYEMULATION_PEOPLECOUNT_MAXNUMBER_VALUE}
+        DB_NAME: ${PGSQL_DATABASE}
+        DB_USER: ${PGSQL_USER}
+        DB_PASSWORD: ${PGSQL_PASSWORD}
+        DB_PORT_5432_TCP_ADDR: posgresql
+        DB_PORT_5432_TCP_PORT: 5432
+        MAX_COUNTER_DENSITYMAP: ${V_MAX_COUNTER_DENSITYMAP}
+        COUNT_WRISTBANDS: ${V_COUNT_WRISTBANDS}
+        WRISTBAND_ID_START: ${V_WRISTBAND_ID_START}
+        CAMERA_IOTID: ${V_CAMERA_IOTID}
+        CAMERA_NAME: ${V_CAMERA_NAME}
+        CAMERA_GPP_LATITUDE: ${V_CAMERA_GPP_LATITUDE}
+        CAMERA_GPP_LONGITUDE: ${V_CAMERA_GPP_LONGITUDE}
+        CAMERA_GPO: ${V_CAMERA_GPO}
+        CAMERA_NUMBER_ROWS: ${V_CAMERA_NUMBER_ROWS}
+        CAMERA_NUMBER_COLS: ${V_CAMERA_NUMBER_COLS}
+        TYPE_OUTPUT_DICTIONARY: ${V_TYPE_OUTPUT_DICTIONARY}
+        GOST_PROVIDER: ${V_GOST_PROVIDER}
+    links:
+      - rabbit
+      - posgresql
+      - mosquitto
+      - redis
+    depends_on:
+      - rabbit
+      - posgresql
+      - mosquitto
+      - redis
+      
+  scral:
+    depends_on:
+      - worker_emulator
+
 
 volumes:
   postgresql_data:
