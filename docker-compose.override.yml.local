@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  mqtt:
+    container_name: hldf_docker_mqtt_mosquitto_${ENVTYPE}
+    hostname: hldf_mqtt_mosquitto_${ENVTYPE}
+    image: ansi/mosquitto:latest
+    networks:
+      - monica_hldfad_net
+    ports:
+      - '${MQTT_DOCKER_EXPOSED_PORT_MESSAGES}:1883'
+      - '${MQTT_DOCKER_EXPOSED_PORT_DIAGNOSTIC}:9001'
+    expose:
+      - '${MQTT_DOCKER_EXPOSED_PORT_MESSAGES}'
+      - '${MQTT_DOCKER_EXPOSED_PORT_DIAGNOSTIC}'
+    entrypoint: /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+    environment:
+      - MOSQUITTO_MQTT_URL=mqtt
+      - MOSQUITTO_USERNAME=${MOSQUITTO_USERNAME_VALUE}
+      - MOSQUITTO_PASSWORD=${MOSQUITTO_PASSWORD_VALUE}
+    volumes:
+      - ./images/mosquitto:/etc/mosquitto:ro
+      - ./images/mosquitto/auth:/etc/mosquitto/auth
+      - ./images/mosquitto/logs:/var/log/mosquitto:rw
+      - ./images/mosquitto/data:/mosquitto/data/
+  worker:
+    links:
+      - posgresql
+    depends_on:
+      - posgresql
+  posgresql:
+    hostname: hldf_host_posgresql_${ENVTYPE}
+    container_name: hldf_docker_posgresql_${ENVTYPE}
+    image: mdillon/postgis:latest
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PGSQL_USER}
+      POSTGRES_PASS: ${PGSQL_PASSWORD}
+      POSTGRES_DB: ${PGSQL_DATABASE}
+    ports:
+      - '${PGSQL_PORT}:5432'
+    restart: unless-stopped
+    networks:
+      - monica_hldfad_net
+
+  portainer:
+    container_name: hldf_docker_portainer
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+    - '${PORTAINER_DOCKER_EXPOS_PORT}:9000'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer_data:/data
+    networks:
+    - monica_hldfad_net
+
+  flower:
+    container_name: hldf_docker_flower_${ENVTYPE}
+    hostname: hldf_host_flower_${ENVTYPE}
+    image: mher/flower
+    command: ["flower", "--broker=redis://redis:6379/0", "--port=8888"]
+    ports:
+    - ${FLOWER_DOCKER_PORT}:8888
+    networks:
+      - monica_hldfad_net
+
+volumes:
+  postgresql_data:
+    driver: local
+  portainer_data:
