@@ -25,7 +25,8 @@ services:
     worker:
         container_name: hldf_docker_celery_worker_${ENVTYPE}
         hostname: hldf_host_celery_worker_${ENVTYPE}
-        image: monicaproject/hldfad_worker:02.06.01.02
+        image: monicaproject/hldfad_worker:02.06.01.03
+        #image: hldfad_worker:latest
         volumes:
           # - ./monica:/code
           - ./images/monica_celery/logs:/logs
@@ -36,11 +37,11 @@ services:
         environment:
           ENV_SELECT_DB_TYPE: ${V_ARG_DATABASETYPE}
           DJANGO_SETTINGS_MODULE: shared.settings.appglobalconf
-          DB_PORT_5432_TCP_ADDR: ${PGSQL_HOST}
-          DB_PORT_5432_TCP_PORT: ${PGSQL_PORT}
-          DB_USER: ${PGSQL_USER}
-          DB_PASSWORD: ${PGSQL_PASSWORD}
-          DB_NAME: ${PGSQL_DATABASE}
+          DB_PORT_5432_TCP_ADDR: ${PGSQL_WORKER_HOST}
+          DB_PORT_5432_TCP_PORT: ${PGSQL_WORKER_PORT}
+          DB_USER: ${PGSQL_WORKER_USER}
+          DB_PASSWORD: ${PGSQL_WORKER_PASSWORD}
+          DB_NAME: ${PGSQL_WORKER_DATABASE}
           RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
           RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
           RABBITMQ_HOSTNAME: rabbit
@@ -77,6 +78,7 @@ services:
           APPSETTING_TASK_ALIVEAPP_FREQ_SECS: ${V_APPSETTING_TASK_ALIVEAPP_FREQ_SECS}
           APPSETTING_ENABLE_OBS_IOTIDRETRIEVE: ${V_APPSETTING_ENABLE_OBS_IOTIDRETRIEVE}
           APPSETTING_GOST_NAME: ${V_APPSETTING_GOST_NAME}
+          APPSETTINGS_ENABLE_IMMEDIATEELABORATION_FEEDBYNUMBEROBS: ${V_APPSETTINGS_ENABLE_IMMEDIATEELABORATION_FEEDBYNUMBEROBS}
         links:
           - rabbit
           - redis
