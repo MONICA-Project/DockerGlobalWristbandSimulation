@@ -12,6 +12,9 @@ services:
       - worker_emul_db
     depends_on:
       - worker_emul_db
+    expose:
+      - '${WEB_GOST_PORT}'
+      - '${WEB_DIAGNOSTIC_PORT}'
     ports:
       - '${WEB_GOST_PORT}:${V_SERVER_WEB_PORT}'
       - '${WEB_DIAGNOSTIC_PORT}:3001'
@@ -51,11 +54,14 @@ services:
       POSTGRES_USER: ${PGSQL_WORKER_USER}
       POSTGRES_PASS: ${PGSQL_WORKER_PASSWORD}
       POSTGRES_DB: ${PGSQL_WORKER_DATABASE}
+    expose:
+        - '${PGSQL_WORKER_PORT}'
     ports:
-      - '${PGSQL_WORKER_PORT}:5432'
+        - '${PGSQL_WORKER_PORT}:${PGSQL_WORKER_PORT}'
     restart: unless-stopped
     networks:
       - monica_hldfad_net
+    command: -p ${PGSQL_WORKER_PORT}
 
   portainer:
     container_name: hldf_docker_portainer
@@ -81,19 +87,19 @@ services:
       POSTGRES_PASS: ${PGSQL_EMUL_PASSWORD}
       POSTGRES_DB: ${PGSQL_EMUL_DATABASE}
     expose:
-        - "5433"
+        - "${PGSQL_EMUL_PORT}"
     ports:
-      - '${PGSQL_EMUL_PORT}:5433'
+        - '${PGSQL_EMUL_PORT}:${PGSQL_EMUL_PORT}'
     restart: unless-stopped
     networks:
       - monica_hldfad_net
-    command: -p 5433
+    command: -p ${PGSQL_EMUL_PORT}
     
   #Celery worker
   worker_emulator:
     container_name: gostemul_docker_celery_worker_${ENVTYPE}
     hostname: gostemul_host_celery_worker_${ENVTYPE}
-    image: monicaproject/hldf_gostemulator_worker:00.00.00.01
+    image: monicaproject/hldf_gostemulator_worker:00.00.00.02
     volumes:
       - ./images/emul_celery/logs:/logs/
       - ./images/emul_celery/var/run/celery:/var/run/celery
@@ -118,7 +124,7 @@ services:
         DB_USER: ${PGSQL_EMUL_USER}
         DB_PASSWORD: ${PGSQL_EMUL_PASSWORD}
         DB_PORT_5432_TCP_ADDR: worker_emul_db
-        DB_PORT_5432_TCP_PORT: 5432
+        DB_PORT_5432_TCP_PORT: ${PGSQL_EMUL_PORT}
         MAX_COUNTER_DENSITYMAP: ${V_MAX_COUNTER_DENSITYMAP}
         COUNT_WRISTBANDS: ${V_COUNT_WRISTBANDS}
         WRISTBAND_ID_START: ${V_WRISTBAND_ID_START}
