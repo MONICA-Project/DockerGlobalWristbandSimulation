@@ -9,49 +9,49 @@ services:
     volumes:
       - ./images/web/logs:/logs/
     links:
-      - posgresql
+      - worker_emul_db
     depends_on:
-      - posgresql
+      - worker_emul_db
     ports:
       - '${WEB_GOST_PORT}:8000'
       - '${WEB_DIAGNOSTIC_PORT}:3001'
     environment:
       LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
-      EXPOSED_MQTT_HOST: ${V_LOCALHOST_MACHINE}
-      EXPOSED_MQTT_PORT: ${MQTT_QUEUE_PORT}
+      EXPOSED_MQTT_HOST: mosquitto
+      EXPOSED_MQTT_PORT: 1883
       GOST_THINGID_SFN: ${GOST_THINGID_SFN_VALUE}
       GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
-      DB_NAME: ${PGSQL_DATABASE}
-      DB_USER: ${PGSQL_USER}
-      DB_PASSWORD: ${PGSQL_PASSWORD}
-      DB_PORT_5432_TCP_ADDR: posgresql
-      DB_PORT_5432_TCP_PORT: 5432
+      DB_NAME: ${PGSQL_EMUL_DATABASE}
+      DB_USER: ${PGSQL_EMUL_USER}
+      DB_PASSWORD: ${PGSQL_EMUL_PASSWORD}
+      DB_PORT_5432_TCP_ADDR: worker_emul_db
+      DB_PORT_5432_TCP_PORT: 5433
     networks:
       - monica_hldfad_net
 
   worker:
     links:
-      - posgresql
+      - worker_db
       - servicecatalog
     depends_on:
-      - posgresql
+      - worker_db
       - servicecatalog
     environment:
       WP6_CATALOG_CONNECTIONURL: servicecatalog
       WP6_CATALOG_CONNECTIONPORT: 8000
       
-  posgresql:
-    hostname: hldf_host_posgresql_${ENVTYPE}
-    container_name: hldf_docker_posgresql_${ENVTYPE}
+  worker_db:
+    hostname: hldf_host_workerdb_${ENVTYPE}
+    container_name: hldf_docker_workerdb_${ENVTYPE}
     image: mdillon/postgis:latest
     volumes:
       - /var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${PGSQL_USER}
-      POSTGRES_PASS: ${PGSQL_PASSWORD}
-      POSTGRES_DB: ${PGSQL_DATABASE}
+      POSTGRES_USER: ${PGSQL_WORKER_USER}
+      POSTGRES_PASS: ${PGSQL_WORKER_PASSWORD}
+      POSTGRES_DB: ${PGSQL_WORKER_DATABASE}
     ports:
-      - '${PGSQL_PORT}:5432'
+      - '${PGSQL_WORKER_PORT}:5432'
     restart: unless-stopped
     networks:
       - monica_hldfad_net
@@ -68,6 +68,25 @@ services:
     - portainer_data:/data
     networks:
     - monica_hldfad_net
+    
+  worker_emul_db:
+    hostname: hldf_host_workeremul_db_${ENVTYPE}
+    container_name: hldf_docker_workeremul_${ENVTYPE}
+    image: mdillon/postgis:latest
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PGSQL_EMUL_USER}
+      POSTGRES_PASS: ${PGSQL_EMUL_PASSWORD}
+      POSTGRES_DB: ${PGSQL_EMUL_DATABASE}
+    expose:
+        - "5433"
+    ports:
+      - '${PGSQL_EMUL_PORT}:5433'
+    restart: unless-stopped
+    networks:
+      - monica_hldfad_net
+    command: -p 5433
     
   #Celery worker
   worker_emulator:
@@ -94,10 +113,10 @@ services:
         GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
         CROWDDENSITYEMULATION_PEOPLECOUNT_MINNUMBER: ${CROWDDENSITYEMULATION_PEOPLECOUNT_MINNUMBER_VALUE}
         CROWDDENSITYEMULATION_PEOPLECOUNT_MAXNUMBER: ${CROWDDENSITYEMULATION_PEOPLECOUNT_MAXNUMBER_VALUE}
-        DB_NAME: ${PGSQL_DATABASE}
-        DB_USER: ${PGSQL_USER}
-        DB_PASSWORD: ${PGSQL_PASSWORD}
-        DB_PORT_5432_TCP_ADDR: posgresql
+        DB_NAME: ${PGSQL_EMUL_DATABASE}
+        DB_USER: ${PGSQL_EMUL_USER}
+        DB_PASSWORD: ${PGSQL_EMUL_PASSWORD}
+        DB_PORT_5432_TCP_ADDR: worker_emul_db
         DB_PORT_5432_TCP_PORT: 5432
         MAX_COUNTER_DENSITYMAP: ${V_MAX_COUNTER_DENSITYMAP}
         COUNT_WRISTBANDS: ${V_COUNT_WRISTBANDS}
@@ -113,12 +132,12 @@ services:
         GOST_PROVIDER: ${V_GOST_PROVIDER}
     links:
       - rabbit
-      - posgresql
+      - worker_emul_db
       - mosquitto
       - redis
     depends_on:
       - rabbit
-      - posgresql
+      - worker_emul_db
       - mosquitto
       - redis
       
@@ -128,6 +147,6 @@ services:
 
 
 volumes:
-  postgresql_data:
-    driver: local
-  portainer_data:
+    worker_emul_db_data: {}
+    worker_db_data: {}
+    portainer_data: {}
