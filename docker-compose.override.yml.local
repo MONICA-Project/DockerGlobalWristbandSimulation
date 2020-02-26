@@ -5,7 +5,7 @@ services:
     container_name: gostemul_docker_web_${ENVTYPE}
     hostname: gostemul_host_web_${ENVTYPE}
     restart: always
-    image: monicaproject/servicecatalogemulator:00.00.00.01
+    image: monicaproject/servicecatalogemulator:00.00.00.02
     volumes:
       - ./images/web/logs:/logs/
     links:
@@ -13,7 +13,7 @@ services:
     depends_on:
       - worker_emul_db
     ports:
-      - '${WEB_GOST_PORT}:8000'
+      - '${WEB_GOST_PORT}:${V_SERVER_WEB_PORT}'
       - '${WEB_DIAGNOSTIC_PORT}:3001'
     environment:
       LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
@@ -26,6 +26,7 @@ services:
       DB_PASSWORD: ${PGSQL_EMUL_PASSWORD}
       DB_PORT_5432_TCP_ADDR: worker_emul_db
       DB_PORT_5432_TCP_PORT: 5433
+      SERVER_WEB_PORT: ${V_SERVER_WEB_PORT}
     networks:
       - monica_hldfad_net
 
@@ -38,7 +39,7 @@ services:
       - servicecatalog
     environment:
       WP6_CATALOG_CONNECTIONURL: servicecatalog
-      WP6_CATALOG_CONNECTIONPORT: 8000
+      WP6_CATALOG_CONNECTIONPORT: ${V_SERVER_WEB_PORT}
       
   worker_db:
     hostname: hldf_host_workerdb_${ENVTYPE}
