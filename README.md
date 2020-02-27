@@ -11,10 +11,24 @@ This repository reports a working docker compose example of whole MONICA toolcha
 - Service Catalog
 - High Level Data Fusion
 
-In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area), 
-i.e. the computation of occurrency of localization within geospatial density map.
+In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
+i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction.
+
+A simple example is shown in figure below. The points represents the location of each person with respect to the Ground Plane Position. 
 
 ![Density Map Figure](https://github.com/MONICA-Project/DockerGlobalWristbandSimulation/blob/master/chart_enudistributions.jpg) 
+
+Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+
+| ColIndex | 0 | 1 | 2 | 3 | 4 |
+| :---- | ---- | ---- | ---- | ---- | ---- |
+| **4**| 0 | 0 | 0 | 0 | 0 |
+| **3**| 0 | 0 | 0 | 0 | 0 |
+| **2**| 0 | 0 | 0 | 0 | 0 |
+| **1**| 4 | 1 | 1 | 1 | 1 |
+| **0**| 2 | 0 | 0 | 0 | 0 |
+
+Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
 
 ## Getting Started
 <!-- Instruction to make the project up and running. -->
