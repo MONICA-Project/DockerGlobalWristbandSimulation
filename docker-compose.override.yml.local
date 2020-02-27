@@ -39,6 +39,7 @@ services:
       - servicecatalog
     depends_on:
       - worker_db
+      - worker_emulator
       - servicecatalog
     environment:
       WP6_CATALOG_CONNECTIONURL: servicecatalog

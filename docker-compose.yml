@@ -25,7 +25,8 @@ services:
     worker:
         container_name: hldf_docker_celery_worker_${ENVTYPE}
         hostname: hldf_host_celery_worker_${ENVTYPE}
-        image: monicaproject/hldfad_worker:02.06.01.03
+        image: monicaproject/hldfad_worker:02.06.01.04
+        restart: always
         #image: hldfad_worker:latest
         volumes:
           # - ./monica:/code
