@@ -14,6 +14,8 @@ This repository reports a working docker compose example of whole MONICA toolcha
 In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area), 
 i.e. the computation of occurrency of localization within geospatial density map.
 
+![Density Map Figure](https://github.com/MONICA-Project/DockerGlobalWristbandSimulation/blob/master/chart_enudistributions.jpg) 
+
 ## Getting Started
 <!-- Instruction to make the project up and running. -->
 Ensuring that Docker Engine is correctly installed. Then, after clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command:
