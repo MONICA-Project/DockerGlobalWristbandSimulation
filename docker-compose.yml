@@ -162,6 +162,7 @@ services:
     scral:
         image: monicaproject/scral:${SCRAL_TYPE_MODULE}
         container_name: "SCRAL-${SCRAL_TYPE_MODULE}_${ENVTYPE}"
+        restart: always
         ports:
             - "8000:8000"
         depends_on:
