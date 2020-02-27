@@ -4,8 +4,8 @@ services:
   servicecatalog:
     container_name: gostemul_docker_web_${ENVTYPE}
     hostname: gostemul_host_web_${ENVTYPE}
-    restart: always
-    image: monicaproject/servicecatalogemulator:00.00.00.02
+    restart: on-failure
+    image: monicaproject/servicecatalogemulator:00.00.00.03
     volumes:
       - ./images/web/logs:/logs/
     links:
@@ -33,7 +33,7 @@ services:
     networks:
       - monica_hldfad_net
 
-  worker:
+  hldfad_worker:
     links:
       - worker_db
       - servicecatalog

@@ -21,11 +21,11 @@ services:
           - "${RABBITMQ_DOCKER_PORT_DIAGNOSTIC}:5672" # we forward this port because it's useful for debugging
           - "${RABBITMQ_DOCKER_PORT_SERVICE}:15672" # hre, we can access rabbitmq management plugin
 
-    #Celery worker
-    worker:
+    #Celery hldfad_worker
+    hldfad_worker:
         container_name: hldf_docker_celery_worker_${ENVTYPE}
         hostname: hldf_host_celery_worker_${ENVTYPE}
-        image: monicaproject/hldfad_worker:02.06.01.04
+        image: monicaproject/hldfad_worker:02.06.01.05
         restart: always
         #image: hldfad_worker:latest
         volumes:
@@ -46,6 +46,7 @@ services:
           RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
           RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
           RABBITMQ_HOSTNAME: rabbit
+          RABBITMQ_PORT: 5672
           CACHEREDIS_DEFAULT_HOSTNAME: redis
           CACHEREDIS_DEFAULT_PORT: 6379
           ENV_MQTT_OBSERVATION_URL: ${V_ENV_MQTT_OBSERVATION_URL}
