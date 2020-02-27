@@ -170,6 +170,7 @@ services:
             - dashboard
             - gost
             - mosquitto
+        restart: on-failure
         environment:
             ### Necessary to enable other env variables
             CONFIG: "custom"
