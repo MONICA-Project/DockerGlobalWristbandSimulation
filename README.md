@@ -22,10 +22,35 @@ Ensuring that Docker Engine is correctly installed. Then, after clone current gi
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh local
 ```
 
-To launch development (in construction) configuration, launch:
+To launch development environment (under construction) configuration, launch:
 ```bash
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh dev
 ```
+
+## Docker Compose Contents
+
+The following table shows the list of services and minimum explaination as they appears on docker-compose.yml and docker-compose.override.yml:
+
+| Service Name | Container Name | Short Description | Links | Depends on |
+| --------------- | --------------- | --------------- | --------------- | --------------- |
+| hldfad_worker| hldf_docker_celery_worker_${ENVTYPE} | High Level Data Fusion and Anomaly Detection Core | rabbit, redis, mosquitto, dashboard, worker_db, servicecatalog | rabbit, redis, mosquitto, dashboard, scral, wb_mqtt_emulator, servicecatalog|
+| rabbit | hldf_docker_rabbit_${ENVTYPE} | Rabbit For Queue Management (support for hldfad_worker celery tasks) | None | None |
+| redis | hldf_docker_cache_redis_${ENVTYPE} | Temporarily cache for hldfad_worker | None| None |
+| node-red | gost-node-red_${ENVTYPE} |  | |  |
+| mosquitto | gost-mosquitto-${ENVTYPE} | Broker MQTT as a middleware for SCRAL and hldfad_worker | None | None |
+| gost-db | gost-db_${ENVTYPE} | DB for GOST | None | None |
+| gost | gost-gostreal_${ENVTYPE} | Real GOST Engine | None | mosquitto, gost-db |
+| dashboard | gost_dashboard_${ENVTYPE} | Web services to get GOST Catalog with Things and Datastreams | None | gost |
+| scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | | dashboard, gost, mosquitto |
+| servicecatalog | gostemul_docker_web_${ENVTYPE} | WP6 Service Catalog (temporarily) | worker_emul_db | worker_emul_db |
+| worker_db | hldf_host_workerdb_${ENVTYPE} | PosgreSQL Database used by hldfad_worker to store output | None | None |
+| portainer | hldf_docker_portainer | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
+| worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  |  | servicecatalog |
+| wb_mqtt_emulator | WB-MQTT-Emulator | Wristband Observations Generator Emulator | mosquitto | dashboard,gost,mosquitto,scral |
+
+NOTE:
+
+- worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
 ### Docker
 
@@ -44,23 +69,26 @@ connecting on MQTT Broker on localhost:1883, subscribing to topic: GOST_TIVOLI/D
 
 The following table show the list of services with opened ports (inside subnet and forward to external connections):
 
-| Service Name | Container Name | External Port | Internal Subnet Port | Income Connection From |
+| Service Name | Type Port | External Port | Internal Subnet Port | Income Connection From |
 | --------------- | --------------- | --------------- | --------------- | --------------- |
-| rabbit | hldf_docker_rabbit_${ENVTYPE} | ${RABBITMQ_DOCKER_PORT_DIAGNOSTIC} | 5672| hldfad_worker |
-| redis | hldf_docker_cache_redis_${ENVTYPE} | ${REDISCACHE_PORT} | 6379| hldfad_worker |
-| node-red | gost-node-red_${ENVTYPE} | 1880 | 1880| gost |
-| mosquitto | gost-mosquitto-${ENVTYPE} | 1883 | 1883| gost, scral, hldfad_worker|
-| gost-db | gost-db_${ENVTYPE}| ? | ? | gost |
-| dashboard | gost_dashboard_${ENVTYPE} | 8080 | 8080| gost, hldfad_worker |
-| scral | SCRAL-wb-MQTT_${ENVTYPE} | 8000 | 8000| gost, hldfad_worker |
-| servicecatalog | gostemul_docker_web_${ENVTYPE} | ${WEB_GOST_PORT} | ${V_SERVER_WEB_PORT} | hldfad_worker |
-| worker_db | hldf_host_workerdb_${ENVTYPE} | ${PGSQL_WORKER_PORT} | ${PGSQL_WORKER_PORT} | hldfad_worker |
-| portainer | hldf_docker_portainer | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
-| worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | ${PGSQL_EMUL_PORT} | ${PGSQL_EMUL_PORT} | servicecatalog |
+| rabbit | Service | ${RABBITMQ_DOCKER_PORT_DIAGNOSTIC} | 5672| hldfad_worker |
+| rabbit | Diagnostic | ${RABBITMQ_DOCKER_PORT_SERVICE} | 15672| None |
+| redis | Service | ${REDISCACHE_PORT} | 6379| hldfad_worker |
+| node-red | Service | 1880 | 1880| gost |
+| mosquitto | Service | 1883 | 1883| gost, scral, hldfad_worker|
+| mosquitto | Diagnostic | 9001 | 9001| None |
+| dashboard | Service | 8080 | 8080| gost, hldfad_worker |
+| scral | Service | 8000 | 8000| gost, hldfad_worker |
+| servicecatalog | Service | ${WEB_GOST_PORT} | ${V_SERVER_WEB_PORT} | hldfad_worker |
+| servicecatalog | Diagnostic | ${WEB_DIAGNOSTIC_PORT} | 3001 | hldfad_worker |
+| worker_db | Service | ${PGSQL_WORKER_PORT} | ${PGSQL_WORKER_PORT} | hldfad_worker |
+| portainer | Service | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
+| worker_emul_db | Diagnostic | ${PGSQL_EMUL_PORT} | ${PGSQL_EMUL_PORT} | servicecatalog |
 
-NOTE: 
+NOTE:
+
 - Variables ${} are those reported in .env file. Therefore, such port can be easiliy changed;
-- worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one
+- worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
 ## Contributing
 Contributions are welcome. 
