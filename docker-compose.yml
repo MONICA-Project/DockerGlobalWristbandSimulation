@@ -160,13 +160,14 @@ services:
           
     # SCRAL 
     scral:
-        image: monicaproject/scral:${SCRAL_TYPE_MODULE}
-        container_name: "SCRAL-${SCRAL_TYPE_MODULE}_${ENVTYPE}"
+        image: monicaproject/scral:wristband_mqtt
+        container_name: "SCRAL-wb-MQTT_${ENVTYPE}"
         restart: always
         ports:
             - "8000:8000"
         depends_on:
             - dashboard
+            - gost
             - mosquitto
         environment:
             ### Necessary to enable other env variables
@@ -191,10 +192,6 @@ services:
             # SUB_BROKER_URI: "iot.hamburg.de"
             SUB_BROKER_URI: mosquitto
 
-            ### only for SLM:
-            # SITENAME: "Movida"
-            # TENANTID: "f159a3d1-cde1-405e-bc46-754609125585"
-            # SITEID: "54c9dd30-f915-42b7-b00c-c07c891fb0ce"
         networks:
           - monica_hldfad_net            
 
