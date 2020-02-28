@@ -1,0 +1,80 @@
+version: '3.7'
+
+services:
+  
+  wp6_service_catalog:
+  # TODO (CNET): Add missing parameters to include WP6 GOST Service Catalog
+    ports:
+        - '${SERVICE_CATALOG_PORT}:${V_SERVER_WEB_PORT}'
+  cop:
+  # TODO (CNET): COP Configuration
+	
+  
+  hldfad_worker:
+	# TODO (CNET): Add service catalog in links and depends_on
+    links:
+      - worker_db
+	  - wp6_service_catalog
+    depends_on:
+      - worker_db
+      - wb_mqtt_emulator
+	  - wp6_service_catalog
+    environment:
+      # TODO (CNET): Sets this variables with Service GOST Catalog
+      WP6_CATALOG_CONNECTIONURL: wp6_service_catalog
+      WP6_CATALOG_CONNECTIONPORT: ${V_SERVER_WEB_PORT} 
+      
+  worker_db:
+    hostname: hldf_host_workerdb_${ENVTYPE}
+    container_name: hldf_docker_workerdb_${ENVTYPE}
+    image: mdillon/postgis:latest
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PGSQL_WORKER_USER}
+      POSTGRES_PASS: ${PGSQL_WORKER_PASSWORD}
+      POSTGRES_DB: ${PGSQL_WORKER_DATABASE}
+    expose:
+        - '${PGSQL_WORKER_PORT}'
+    ports:
+        - '${PGSQL_WORKER_PORT}:${PGSQL_WORKER_PORT}'
+    restart: unless-stopped
+    networks:
+      - monica_hldfad_net
+    command: -p ${PGSQL_WORKER_PORT}
+
+  portainer:
+    container_name: hldf_docker_portainer
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+    - '${PORTAINER_DOCKER_EXPOS_PORT}:9000'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer_data:/data
+    networks:
+    - monica_hldfad_net
+ 
+  wb_mqtt_emulator:
+    container_name: "WB-MQTT-Emulator"
+    image: monicaproject/wb_mqtt_emulator:wt-4-stages
+    depends_on:
+        - dashboard
+        - gost
+        - mosquitto
+        - scral
+    links:
+        - mosquitto
+    environment:
+        MQTT_HOSTNAME: mosquitto
+        MQTT_PORT: 1883
+        BURST_INTERVAL_SEC: 20
+        DEVICE_NUMBER: 50
+        GOST_MQTT_PREFIX: "GOST/"
+    networks:
+      - monica_hldfad_net
+
+volumes:
+    worker_db_data: {}
+    portainer_data: {}

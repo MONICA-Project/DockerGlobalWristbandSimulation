@@ -1,0 +1,149 @@
+version: '3.7'
+
+services:
+  servicecatalog:
+    container_name: gostemul_docker_web_${ENVTYPE}
+    hostname: gostemul_host_web_${ENVTYPE}
+    restart: on-failure
+    image: monicaproject/servicecatalogemulator:00.00.00.03
+    volumes:
+      - ./images/web/logs:/logs/
+    links:
+      - worker_emul_db
+    depends_on:
+      - worker_emul_db
+    expose:
+      - '${WEB_GOST_PORT}'
+      - '${WEB_DIAGNOSTIC_PORT}'
+    ports:
+      - '${WEB_GOST_PORT}:${V_SERVER_WEB_PORT}'
+      - '${WEB_DIAGNOSTIC_PORT}:3001'
+    environment:
+      LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
+      EXPOSED_MQTT_HOST: mosquitto
+      EXPOSED_MQTT_PORT: 1883
+      GOST_THINGID_SFN: ${GOST_THINGID_SFN_VALUE}
+      GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
+      DB_NAME: ${PGSQL_EMUL_DATABASE}
+      DB_USER: ${PGSQL_EMUL_USER}
+      DB_PASSWORD: ${PGSQL_EMUL_PASSWORD}
+      DB_PORT_5432_TCP_ADDR: worker_emul_db
+      DB_PORT_5432_TCP_PORT: 5433
+      SERVER_WEB_PORT: ${V_SERVER_WEB_PORT}
+    networks:
+      - monica_hldfad_net
+
+  hldfad_worker:
+    links:
+      - worker_db
+      - servicecatalog
+    depends_on:
+      - worker_db
+      - wb_mqtt_emulator
+      - servicecatalog
+    environment:
+      WP6_CATALOG_CONNECTIONURL: servicecatalog
+      WP6_CATALOG_CONNECTIONPORT: ${V_SERVER_WEB_PORT}
+      
+  worker_db:
+    hostname: hldf_host_workerdb_${ENVTYPE}
+    container_name: hldf_docker_workerdb_${ENVTYPE}
+    image: mdillon/postgis:latest
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PGSQL_WORKER_USER}
+      POSTGRES_PASS: ${PGSQL_WORKER_PASSWORD}
+      POSTGRES_DB: ${PGSQL_WORKER_DATABASE}
+    expose:
+        - '${PGSQL_WORKER_PORT}'
+    ports:
+        - '${PGSQL_WORKER_PORT}:${PGSQL_WORKER_PORT}'
+    restart: unless-stopped
+    networks:
+      - monica_hldfad_net
+    command: -p ${PGSQL_WORKER_PORT}
+
+  portainer:
+    container_name: hldf_docker_portainer
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+    - '${PORTAINER_DOCKER_EXPOS_PORT}:9000'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer_data:/data
+    networks:
+    - monica_hldfad_net
+    
+  worker_emul_db:
+    hostname: hldf_host_workeremul_db_${ENVTYPE}
+    container_name: hldf_docker_workeremul_${ENVTYPE}
+    image: mdillon/postgis:latest
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PGSQL_EMUL_USER}
+      POSTGRES_PASS: ${PGSQL_EMUL_PASSWORD}
+      POSTGRES_DB: ${PGSQL_EMUL_DATABASE}
+    expose:
+        - "${PGSQL_EMUL_PORT}"
+    ports:
+        - '${PGSQL_EMUL_PORT}:${PGSQL_EMUL_PORT}'
+    restart: unless-stopped
+    networks:
+      - monica_hldfad_net
+    command: -p ${PGSQL_EMUL_PORT}
+  
+  wb_mqtt_emulator:
+    container_name: "WB-MQTT-Emulator"
+    image: monicaproject/wb_mqtt_emulator:latest
+    depends_on:
+        - dashboard
+        - gost
+        - mosquitto
+        - scral
+    links:
+        - mosquitto
+    environment:
+        MQTT_HOSTNAME: mosquitto
+        MQTT_PORT: 1883
+        BURST_INTERVAL_SEC: 20
+        DEVICE_NUMBER: 50
+        GOST_MQTT_PREFIX: "GOST/"
+        
+        STAGE_NAME_1: "WoodsTower Main"
+        DISTR_STAGE_1: 25
+        LAT_STAGE_1: 45.797197
+        LON_STAGE_1: 4.952072
+        SIGMA_N_S_1: 400
+        SIGMA_E_O_1: 400
+
+        STAGE_NAME_2: "WoodsTower Saint Denis"
+        DISTR_STAGE_2: 25
+        LAT_STAGE_2: 45.797434
+        LON_STAGE_2: 4.952652
+        SIGMA_N_S_2: 400
+        SIGMA_E_O_2: 400
+
+        STAGE_NAME_3: "WoodsTower Chapiteau"
+        DISTR_STAGE_3: 25
+        LAT_STAGE_3: 45.797425
+        LON_STAGE_3: 4.950973
+        SIGMA_N_S_3: 400
+        SIGMA_E_O_3: 400
+
+        STAGE_NAME_4: "WoodsTower Woodsflor"
+        DISTR_STAGE_4: 25
+        LAT_STAGE_4: 45.798159
+        LON_STAGE_4: 4.952864
+        SIGMA_N_S_4: 400
+        SIGMA_E_O_4: 400
+    networks:
+      - monica_hldfad_net
+
+volumes:
+    worker_emul_db_data: {}
+    worker_db_data: {}
+    portainer_data: {}
