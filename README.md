@@ -91,7 +91,8 @@ ${REPO_ROOT}:$ docker-compose up -d
 ### Real Time Check
 
 The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. MQTT.fx), 
-connecting on MQTT Broker on localhost:1883, subscribing to topic: GOST_TIVOLI/Datastreams(13151)/Observations in order to control generated messages.
+connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations in order to control generated messages (V_APPSETTING_GOST_NAME default value is GOST; therefore 
+default topic is GOST/Datastreams(13151)/Observations).
 
 ### TCP Server activated
 
