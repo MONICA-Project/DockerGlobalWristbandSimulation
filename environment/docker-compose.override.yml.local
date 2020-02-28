@@ -19,6 +19,7 @@ services:
       - '${WEB_GOST_PORT}:${V_SERVER_WEB_PORT}'
       - '${WEB_DIAGNOSTIC_PORT}:3001'
     environment:
+      GOST_PREFIX: ${V_APPSETTING_GOST_NAME}
       LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
       EXPOSED_MQTT_HOST: mosquitto
       EXPOSED_MQTT_PORT: 1883
@@ -111,8 +112,8 @@ services:
         MQTT_PORT: 1883
         BURST_INTERVAL_SEC: 20
         DEVICE_NUMBER: 50
-        GOST_MQTT_PREFIX: "GOST/"
-        
+        GOST_MQTT_PREFIX: "${V_APPSETTING_GOST_NAME}/"
+       
         STAGE_NAME_1: "WoodsTower Main"
         DISTR_STAGE_1: 25
         LAT_STAGE_1: 45.797197
