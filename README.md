@@ -68,6 +68,18 @@ NOTE:
 
 - worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
+## Source Code
+
+The followind table provides link for Docker Hub images and Git Hub Source Code repository. They include documentation about such services. Please, refers to them for detailed information not reported hereafter.
+
+| Service Name | DockerHub Image | GitHub SourceCode |
+| --------------- | --------------- | --------------- |
+| hldfad_worker| [monicaproject/hldfad_worker](https://hub.docker.com/repository/docker/monicaproject/hldfad_worker) | [HLDFAD Open Source Repository](https://github.com/MONICA-Project/HLDFAD_SourceCode)  |
+| scral | [monicaproject/scral](https://hub.docker.com/repository/docker/monicaproject/scral) | [SCRAL Open Source Repository](https://github.com/MONICA-Project/scral-framework)|
+| servicecatalog | [monicaproject/servicecatalogemulator](https://hub.docker.com/repository/docker/monicaproject/servicecatalogemulator) | [Service Catalog Open Source Repository](https://github.com/MONICA-Project/GostScralMqttEmulator)|
+| wb_mqtt_emulator | [monicaproject/wb_mqtt_emulator](https://hub.docker.com/repository/docker/monicaproject/wb_mqtt_emulator) | [Wristband Gateway MQTT Emulator Open Source Repository](https://github.com/MONICA-Project/WristbandGwMqttEmulator) |
+
+
 ### Docker
 
 In order to run overall simulation, launch command from ${REPO_ROOT}:
