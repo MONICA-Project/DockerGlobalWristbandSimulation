@@ -5,7 +5,7 @@ services:
     container_name: gostemul_docker_web_${ENVTYPE}
     hostname: gostemul_host_web_${ENVTYPE}
     restart: on-failure
-    image: monicaproject/servicecatalogemulator:00.00.00.03
+    image: monicaproject/servicecatalogemulator:00.00.00.03-alpine
     volumes:
       - ./images/web/logs:/logs/
     links:
