@@ -4,12 +4,12 @@
 
 This repository reports a working docker compose example of whole MONICA toolchain, from data simulation to visualization. Main components are the following:
 
-- Wristband Emulator
-- SCRAL
-- GOST
-- MQTT Broker
+- [MQTT Wristband GW Emulator](https://github.com/MONICA-Project/WristbandGwMqttEmulator)
+- [SCRAL](https://github.com/MONICA-Project/scral-framework) - MQTT Wristbands Module
+- [GOST](https://github.com/gost/server)
+- MQTT Broker ([Eclipse Mosquitto](https://mosquitto.org/))
 - Service Catalog
-- High Level Data Fusion
+- [High Level Data Fusion](https://github.com/MONICA-Project/HLDFAD_SourceCode)
 
 In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
 i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction.
