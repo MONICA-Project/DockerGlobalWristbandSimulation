@@ -38,12 +38,14 @@ In the following it is reported a quick overview of the current repository in te
 | ---- | -------------------------------- | ---- |
 |.| Current Folder. It contains Docker Composes and environment files (*NOTE*: It is not completed before startup, see Section [started]({#getting-started})|[${REPO_ROOT}](.)|
 |environment| It contains files supporting tools for beginning setup project| [${REPO_ROOT}/environment](environment)|
-|volumes| Persistent Volumes for Docker containers launched (e.g. logs)| [${REPO_ROOT}/images](volumes)| 
+|volumes| Persistent Volumes for Docker containers launched (e.g. logs)| [${REPO_ROOT}/volumes](volumes)| 
 |tools| Bash script to startup environment for first usage| [${REPO_ROOT}/tools](tools)|
 
 ## Getting Started
 <!-- Instruction to make the project up and running. -->
-Ensuring that Docker Engine is correctly installed. Then, after clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command:
+Ensuring that Docker Engine is correctly installed (see [Docker Engine Linux Page](https://docs.docker.com/install/linux/docker-ce/ubuntu/) for Linux or [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) for Windows). 
+
+Then, after clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command:
 
 ```bash
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh local
@@ -66,7 +68,35 @@ or under Windows Command Prompt:
 %REPO_ROOT%> configure_docker_environment.bat dev
 ```
 
-**NOTE**: The environment consistend for such version of repository is local; dev is set just as an example for future extension of this repository.
+**NOTE**: The environment consistent for such version of repository is local; dev is set just as an example for future extension of this repository.
+
+## Run Docker Compose Solution
+
+After first configuration reported in Section [Startup]({#getting-started}), in order to run overall simulation, launch command from ${REPO_ROOT}:
+
+```bash
+${REPO_ROOT}:$ docker-compose up -d
+```
+
+## Stop Docker Compose Solution
+
+To stop simulation, launch command from ${REPO_ROOT}:
+
+```bash
+${REPO_ROOT}:$ docker-compose down
+```
+
+## Clean up Resources after shutdown
+
+If the historical informationm of previous running are not interested, on folder [tools](tools) it has been added purge script to clean up folder after usage and shutdown. 
+
+From bash shell, launch:
+
+```bash
+${REPO_ROOT}/tools:$ sh purge.sh
+```
+
+**NOTE**: such script performs pruning of unused docker resources and it is useful to prevent big size occupation on disk after very long usage (more than 20 hours).
 
 ## Docker Compose Contents
 
@@ -83,7 +113,7 @@ The following table shows the list of services and minimum explaination as they 
 | gost | gost-gostreal_${ENVTYPE} | Real GOST Engine | None | mosquitto, gost-db |
 | dashboard | gost_dashboard_${ENVTYPE} | Web services to get GOST Catalog with Things and Datastreams | None | gost |
 | scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | | dashboard, gost, mosquitto |
-| servicecatalog | gostemul_docker_web_${ENVTYPE} | WP6 Service Catalog (temporarily) | worker_emul_db | worker_emul_db |
+| servicecatalog | wp6_servicecatalogemul_docker_${ENVTYPE} | WP6 Service Catalog (temporarily) | worker_emul_db | worker_emul_db |
 | worker_db | hldf_host_workerdb_${ENVTYPE} | PosgreSQL Database used by hldfad_worker to store output | None | None |
 | portainer | hldf_docker_portainer | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
 | worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  |  | servicecatalog |
@@ -101,15 +131,6 @@ The followind table provides link for Docker Hub images and Git Hub Source Code 
 | scral | [monicaproject/scral](https://hub.docker.com/repository/docker/monicaproject/scral) | [SCRAL Open Source Repository](https://github.com/MONICA-Project/scral-framework)|
 | servicecatalog | [monicaproject/servicecatalogemulator](https://hub.docker.com/repository/docker/monicaproject/servicecatalogemulator) | [Service Catalog Open Source Repository](https://github.com/MONICA-Project/GostScralMqttEmulator)|
 | wb_mqtt_emulator | [monicaproject/wb_mqtt_emulator](https://hub.docker.com/repository/docker/monicaproject/wb_mqtt_emulator) | [Wristband Gateway MQTT Emulator Open Source Repository](https://github.com/MONICA-Project/WristbandGwMqttEmulator) |
-
-
-### Docker
-
-In order to run overall simulation, launch command from ${REPO_ROOT}:
-
-```bash
-${REPO_ROOT}:$ docker-compose up -d
-```
 
 ### Real Time Check
 

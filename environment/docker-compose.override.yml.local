@@ -2,10 +2,10 @@ version: '3.7'
 
 services:
   servicecatalog:
-    container_name: gostemul_docker_web_${ENVTYPE}
-    hostname: gostemul_host_web_${ENVTYPE}
+    container_name: wp6_servicecatalogemul_docker_${ENVTYPE}
+    hostname: wp6_servicecatalogemul_host_${ENVTYPE}
     restart: on-failure
-    image: monicaproject/servicecatalogemulator:00.00.00.03-alpine
+    image: monicaproject/servicecatalogemulator:00.00.00.04-alpine
     volumes:
       - ./volumes/web/logs:/logs/
     links:
