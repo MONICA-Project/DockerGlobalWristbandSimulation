@@ -7,7 +7,7 @@ services:
     restart: on-failure
     image: monicaproject/servicecatalogemulator:00.00.00.03-alpine
     volumes:
-      - ./images/web/logs:/logs/
+      - ./volumes/web/logs:/logs/
     links:
       - worker_emul_db
     depends_on:

@@ -20,7 +20,7 @@ A simple example is shown in figure below. The points represents the location of
 
 Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
 
-| ColIndex | 0 | 1 | 2 | 3 | 4 |
+|  | 0 | 1 | 2 | 3 | 4 |
 | :---- | ---- | ---- | ---- | ---- | ---- |
 | **4**| 0 | 0 | 0 | 0 | 0 |
 | **3**| 0 | 0 | 0 | 0 | 0 |
@@ -29,6 +29,17 @@ Considering the ground plane position incognite and geographic area of 500 m x 5
 | **0**| 2 | 0 | 0 | 0 | 0 |
 
 Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+
+## Repository Contents
+
+In the following it is reported a quick overview of the current repository in terms of folder presentation.
+
+|Folder|Content|Link|
+| ---- | -------------------------------- | ---- |
+|.| Current Folder. It contains Docker Composes and environment files (*NOTE*: It is not completed before startup, see Section [started]({#getting-started})|[${REPO_ROOT}](.)|
+|environment| It contains files supporting tools for beginning setup project| [${REPO_ROOT}/environment](environment)|
+|volumes| Persistent Volumes for Docker containers launched (e.g. logs)| [${REPO_ROOT}/images](volumes)| 
+|tools| Bash script to startup environment for first usage| [${REPO_ROOT}/tools](tools)|
 
 ## Getting Started
 <!-- Instruction to make the project up and running. -->
@@ -78,9 +89,7 @@ The following table shows the list of services and minimum explaination as they 
 | worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  |  | servicecatalog |
 | wb_mqtt_emulator | WB-MQTT-Emulator | Wristband Observations Generator Emulator | mosquitto | dashboard,gost,mosquitto,scral |
 
-NOTE:
-
-- worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
+NOTE: *worker_emul_db* is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
 ## Source Code
 
