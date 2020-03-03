@@ -38,10 +38,24 @@ Ensuring that Docker Engine is correctly installed. Then, after clone current gi
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh local
 ```
 
+or under Windows Command Prompt:
+
+```console
+%REPO_ROOT%> configure_docker_environment.bat local
+```
+
 To launch development environment (under construction) configuration, launch:
 ```bash
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh dev
 ```
+
+or under Windows Command Prompt:
+
+```console
+%REPO_ROOT%> configure_docker_environment.bat dev
+```
+
+**NOTE**: The environment consistend for such version of repository is local; dev is set just as an example for future extension of this repository.
 
 ## Docker Compose Contents
 
