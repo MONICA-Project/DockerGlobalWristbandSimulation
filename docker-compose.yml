@@ -25,7 +25,7 @@ services:
     hldfad_worker:
         container_name: hldf_docker_celery_worker_${ENVTYPE}
         hostname: hldf_host_celery_worker_${ENVTYPE}
-        image: monicaproject/hldfad_worker:02.06.01.06-alpine
+        image: monicaproject/hldfad_worker:02.06.01.08-alpine
         restart: always
         #image: hldfad_worker:latest
         volumes:
@@ -81,6 +81,7 @@ services:
           APPSETTING_ENABLE_OBS_IOTIDRETRIEVE: ${V_APPSETTING_ENABLE_OBS_IOTIDRETRIEVE}
           APPSETTING_GOST_NAME: ${V_APPSETTING_GOST_NAME}
           APPSETTINGS_ENABLE_IMMEDIATEELABORATION_FEEDBYNUMBEROBS: ${V_APPSETTINGS_ENABLE_IMMEDIATEELABORATION_FEEDBYNUMBEROBS}
+          APPSETTING_MINIMUM_ACCEPTWRISTBAND_START: ${V_COUNT_WRISTBANDS}
         links:
           - rabbit
           - redis
@@ -252,7 +253,7 @@ services:
     
     copui:
         image: "monicaproject/monica-cop-examples:crowdwt"
-        container_name: "monica_copui_docker_${ENVTYPE}"
+        container_name: "copui_docker_${ENVTYPE}"
         ports:
           - "8900:8080"
         depends_on:

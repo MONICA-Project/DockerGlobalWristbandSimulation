@@ -42,7 +42,9 @@ In the following it is reported a quick overview of the current repository in te
 |volumes| Persistent Volumes for Docker containers launched (e.g. logs)| [${REPO_ROOT}/volumes](volumes)| 
 |tools| Bash script to startup environment for first usage| [${REPO_ROOT}/tools](tools)|
 
-## Getting Started
+## Quick Start Guide
+
+### Getting Started
 <!-- Instruction to make the project up and running. -->
 Ensuring that Docker Engine is correctly installed (see [Docker Engine Linux Page](https://docs.docker.com/install/linux/docker-ce/ubuntu/) for Linux or [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) for Windows). 
 
@@ -71,7 +73,7 @@ or under Windows Command Prompt:
 
 **NOTE**: The environment consistent for such version of repository is local; dev is set just as an example for future extension of this repository.
 
-## Run Docker Compose Solution
+### Run Docker Compose Solution
 
 After first configuration reported in Section [Startup]({#getting-started}), in order to run overall simulation, launch command from ${REPO_ROOT}:
 
@@ -79,13 +81,14 @@ After first configuration reported in Section [Startup]({#getting-started}), in 
 ${REPO_ROOT}:$ docker-compose up -d
 ```
 
-## Check Execution
+### Check Execution
 
-### COP UI Web Portal (Map)
+#### COP UI Web Portal (Map)
 
-On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!)
+On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!).
+Note that the first output could take some minutes before appearing.
 
-### Real Time Check
+#### Real Time Check
 
 The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
 connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
@@ -93,7 +96,7 @@ In the following, the default configuration to retrieve output:
 - **Crowd Heatmap Output Topic**: GOST/Datastreams(13151)/Observations
 - **MQTT URL**: 127.0.0.1:1883
 
-## Stop Docker Compose Solution
+### Stop Docker Compose Solution
 
 To stop simulation, launch command from ${REPO_ROOT}:
 
@@ -101,7 +104,7 @@ To stop simulation, launch command from ${REPO_ROOT}:
 ${REPO_ROOT}:$ docker-compose down
 ```
 
-## Clean up Resources after shutdown
+### Clean up Resources after shutdown
 
 If the historical informationm of previous running are not interested, on folder [tools](tools) it has been added purge script to clean up folder after usage and shutdown. 
 
@@ -112,6 +115,16 @@ ${REPO_ROOT}/tools:$ sh purge.sh
 ```
 
 **NOTE**: such script performs pruning of unused docker resources and it is useful to prevent big size occupation on disk after very long usage (more than 20 hours).
+
+## Environment Variable
+
+Detailed documentation about environment variable is available in repositories and dockerhubs readme (check Section [Repository and Dockerhub](#source-code-repository-and-dockerhub-images)). 
+
+In the following are reported quick useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
+
+| Environment Variable | Meaning | Default Value | 
+| --------------- | --------------- | --------------- |
+|V_COUNT_WRISTBANDS|Number of Emulated Wristband|1000|
 
 ## Docker Compose Contents
 
@@ -140,7 +153,7 @@ The following table shows the list of services and minimum explaination as they 
 
 **NOTE**: *worker_emul_db* is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
-## Source Code
+## Source Code Repository and DockerHub Images
 
 The followind table provides link for Docker Hub images and Git Hub Source Code repository. They include documentation about such services. Please, refers to them for detailed information not reported hereafter.
 
