@@ -195,7 +195,86 @@ services:
             SUB_BROKER_URI: mosquitto
 
         networks:
-          - monica_hldfad_net            
+          - monica_hldfad_net
+
+    #COP Things
+    copdb:
+        image: "monicaproject/example-databases:CrowdCOPExample2"
+        container_name: "monica_copdb_docker_${ENVTYPE}"
+        ports:
+          - "9998:5432"
+        networks:
+          - monica_hldfad_net 
+          
+    copapi:
+        image: "monicaproject/copapi:0.1"
+        container_name: "monica_copapi_docker_${ENVTYPE}"
+        ports:
+            - "8800:80"
+        depends_on:
+             - mosquitto
+             - gost
+             - copdb
+        environment:
+          - MEDIA_PATH=wwwroot/ora_shared/
+          - CONNECTION_STR=Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+          - GOST_PREFIX=GOST
+          - TEST_TOKEN=6ffdcacb-c485-499c-bce9-23f76d06aa36
+          - USE_GOSTOBS=false
+          - GOST_SERVER=http://gost:8080/v1.0/
+          - URL_PREFIX=
+          - ASPNETCORE_ENVIRONMENT=Development
+        networks:
+             - monica_hldfad_net   
+    
+    copupdater:
+        image: monicaproject/copupdater:WristBand0.2
+        container_name: monica_copupdater_docker_${ENVTYPE}
+        depends_on:
+          - mosquitto
+          - gost
+          - copapi
+          - copdb
+        environment:
+          - CONNECTION_STR=Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+          - GOST_PREFIX=GOST
+          - COP_AUTH_TOKEN=6ffdcacb-c485-499c-bce9-23f76d06aa36
+          - MONICA_THING_TYPE=PeopleHeatmap
+          - COP_API_BASE_PATH_HUB=http://copapi/
+          - COP_API_BASE_PATH=http://copapi/
+          - GOST_SERVER=http://gost:8080/v1.0/
+          - mqttServer=mosquitto
+          - URL_PREFIX=
+          - ASPNETCORE_ENVIRONMENT=Development
+          - signalR=false
+        networks:
+              - monica_hldfad_net   
+    
+    copui:
+        image: "monicaproject/monica-cop-examples:crowdwt"
+        container_name: "monica_copui_docker_${ENVTYPE}"
+        ports:
+          - "8900:8080"
+        depends_on:
+          - mosquitto
+          - gost
+          - copapi
+          - copdb   
+        environment:
+          - CONNECTION_STR=Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+          - GOST_PREFIX=GOST
+          - COP_AUTH_TOKEN=6ffdcacb-c485-499c-bce9-23f76d06aa36
+          - MONICA_THING_TYPE=wearables UWB
+          - COP_API_BASE_PATH_HUB=http://copapi/
+          - COP_API_BASE_PATH=http://copapi/
+          - GOST_SERVER=http://gost:8080/v1.0/
+          - mqttServer=mosquitto
+          - URL_PREFIX=
+          - ASPNETCORE_ENVIRONMENT=Development
+          - signalR=true          
+        networks:
+              - monica_hldfad_net   
+          
 
 networks:
     monica_hldfad_net:

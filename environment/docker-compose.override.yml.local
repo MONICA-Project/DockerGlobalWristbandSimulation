@@ -110,8 +110,8 @@ services:
     environment:
         MQTT_HOSTNAME: mosquitto
         MQTT_PORT: 1883
-        BURST_INTERVAL_SEC: 20
-        DEVICE_NUMBER: 50
+        BURST_INTERVAL_SEC: 40
+        DEVICE_NUMBER: ${V_COUNT_WRISTBANDS}
         GOST_MQTT_PREFIX: "${V_APPSETTING_GOST_NAME}/"
        
         STAGE_NAME_1: "WoodsTower Main"
