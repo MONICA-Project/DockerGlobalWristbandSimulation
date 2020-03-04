@@ -10,6 +10,7 @@ This repository reports a working docker compose example of whole MONICA toolcha
 - MQTT Broker ([Eclipse Mosquitto](https://mosquitto.org/))
 - Service Catalog
 - [High Level Data Fusion](https://github.com/MONICA-Project/HLDFAD_SourceCode)
+- Common Operational Picture (COP)
 
 In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
 i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction.
@@ -78,6 +79,20 @@ After first configuration reported in Section [Startup]({#getting-started}), in 
 ${REPO_ROOT}:$ docker-compose up -d
 ```
 
+## Check Execution
+
+### COP UI Web Portal (Map)
+
+On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!)
+
+### Real Time Check
+
+The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
+connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
+In the following, the default configuration to retrieve output: 
+- **Crowd Heatmap Output Topic**: GOST/Datastreams(13151)/Observations
+- **MQTT URL**: 127.0.0.1:1883
+
 ## Stop Docker Compose Solution
 
 To stop simulation, launch command from ${REPO_ROOT}:
@@ -107,19 +122,23 @@ The following table shows the list of services and minimum explaination as they 
 | hldfad_worker| hldf_docker_celery_worker_${ENVTYPE} | High Level Data Fusion and Anomaly Detection Core | rabbit, redis, mosquitto, dashboard, worker_db, servicecatalog | rabbit, redis, mosquitto, dashboard, scral, wb_mqtt_emulator, servicecatalog|
 | rabbit | hldf_docker_rabbit_${ENVTYPE} | Rabbit For Queue Management (support for hldfad_worker celery tasks) | None | None |
 | redis | hldf_docker_cache_redis_${ENVTYPE} | Temporarily cache for hldfad_worker | None| None |
-| node-red | gost-node-red_${ENVTYPE} |  | |  |
+| node-red | gost-node-red_${ENVTYPE} |  | None| None |
 | mosquitto | gost-mosquitto-${ENVTYPE} | Broker MQTT as a middleware for SCRAL and hldfad_worker | None | None |
 | gost-db | gost-db_${ENVTYPE} | DB for GOST | None | None |
 | gost | gost-gostreal_${ENVTYPE} | Real GOST Engine | None | mosquitto, gost-db |
 | dashboard | gost_dashboard_${ENVTYPE} | Web services to get GOST Catalog with Things and Datastreams | None | gost |
-| scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | | dashboard, gost, mosquitto |
+| scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | None | dashboard, gost, mosquitto |
+| copdb | copdb_docker_${ENVTYPE} | COP DB | None | None |
+| copapi | copapi_docker_${ENVTYPE} | *Missing* | None | mosquitto, gost, copdb |
+| copui | copapi_docker_${ENVTYPE} | COP User Interface (Map View) | None | mosquitto, gost, copdb,copapi |
+| copupdater | copupdater_docker_${ENVTYPE} | *Missing* | None | copapi, gost, mosquitto,copdb |
 | servicecatalog | wp6_servicecatalogemul_docker_${ENVTYPE} | WP6 Service Catalog (temporarily) | worker_emul_db | worker_emul_db |
 | worker_db | hldf_host_workerdb_${ENVTYPE} | PosgreSQL Database used by hldfad_worker to store output | None | None |
 | portainer | hldf_docker_portainer | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
-| worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  |  | servicecatalog |
+| worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  | None | servicecatalog |
 | wb_mqtt_emulator | WB-MQTT-Emulator | Wristband Observations Generator Emulator | mosquitto | dashboard,gost,mosquitto,scral |
 
-NOTE: *worker_emul_db* is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
+**NOTE**: *worker_emul_db* is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
 ## Source Code
 
@@ -131,14 +150,10 @@ The followind table provides link for Docker Hub images and Git Hub Source Code 
 | scral | [monicaproject/scral](https://hub.docker.com/repository/docker/monicaproject/scral) | [SCRAL Open Source Repository](https://github.com/MONICA-Project/scral-framework)|
 | servicecatalog | [monicaproject/servicecatalogemulator](https://hub.docker.com/repository/docker/monicaproject/servicecatalogemulator) | [Service Catalog Open Source Repository](https://github.com/MONICA-Project/GostScralMqttEmulator)|
 | wb_mqtt_emulator | [monicaproject/wb_mqtt_emulator](https://hub.docker.com/repository/docker/monicaproject/wb_mqtt_emulator) | [Wristband Gateway MQTT Emulator Open Source Repository](https://github.com/MONICA-Project/WristbandGwMqttEmulator) |
-
-### Real Time Check
-
-The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. MQTT.fx), 
-connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
-In the following, the default configuration to retrieve output: 
-- **Crowd Heatmap Output Topic**: GOST/Datastreams(13151)/Observations
-- **MQTT URL**: 127.0.0.1:1883
+| copdb | [monicaproject/example-databases](https://hub.docker.com/repository/docker/monicaproject/example-databases) | *Missing* |
+| copapi | [monicaproject/copapi](https://hub.docker.com/repository/docker/monicaproject/copapi) | [GitHub COPAPI Repository](https://github.com/MONICA-Project/COP.API) |
+| copupdater | [monicaproject/copupdater](https://hub.docker.com/repository/docker/monicaproject/copupdater)  | [GitHub COPUI Repository](https://github.com/MONICA-Project/COPUpdater) |
+| copui | [monicaproject/monica-cop-examples](https://hub.docker.com/repository/docker/monicaproject/monica-cop-examples) | [GitHub COPUI Repository](https://github.com/MONICA-Project/COP-UI) |
 
 ### TCP Server activated
 
@@ -158,9 +173,11 @@ The following table show the list of services with opened ports (inside subnet a
 | servicecatalog | Diagnostic | ${WEB_DIAGNOSTIC_PORT} | 3001 | hldfad_worker |
 | worker_db | Service | ${PGSQL_WORKER_PORT} | ${PGSQL_WORKER_PORT} | hldfad_worker |
 | portainer | Service | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
+| copapi | Service | 8800 | 80 | copupdater |
+| copui | Service | 8900 | 8080 | copapi |
 | worker_emul_db | Diagnostic | ${PGSQL_EMUL_PORT} | ${PGSQL_EMUL_PORT} | servicecatalog |
 
-NOTE:
+**NOTE**:
 
 - Variables ${} are those reported in .env file. Therefore, such port can be easiliy changed;
 - worker_emul_db is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
@@ -173,3 +190,4 @@ Please fork, make your changes, and submit a pull request. For major changes, pl
 ## Affiliation
 ![MONICA](https://github.com/MONICA-Project/template/raw/master/monica.png)  
 This work is supported by the European Commission through the [MONICA H2020 PROJECT](https://www.monica-project.eu) under grant agreement No 732350.
+| copdb | Service | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None | 

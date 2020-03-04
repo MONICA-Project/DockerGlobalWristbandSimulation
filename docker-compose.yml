@@ -200,7 +200,7 @@ services:
     #COP Things
     copdb:
         image: "monicaproject/example-databases:CrowdCOPExample2"
-        container_name: "monica_copdb_docker_${ENVTYPE}"
+        container_name: "copdb_docker_${ENVTYPE}"
         ports:
           - "9998:5432"
         networks:
@@ -208,7 +208,7 @@ services:
           
     copapi:
         image: "monicaproject/copapi:0.1"
-        container_name: "monica_copapi_docker_${ENVTYPE}"
+        container_name: "copapi_docker_${ENVTYPE}"
         ports:
             - "8800:80"
         depends_on:
@@ -229,7 +229,7 @@ services:
     
     copupdater:
         image: monicaproject/copupdater:WristBand0.2
-        container_name: monica_copupdater_docker_${ENVTYPE}
+        container_name: copupdater_docker_${ENVTYPE}
         depends_on:
           - mosquitto
           - gost
