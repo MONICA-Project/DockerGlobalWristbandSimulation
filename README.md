@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository reports a working docker compose example of whole MONICA toolchain, from data simulation to visualization. Main components are the following:
+This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization. Main components are the following:
 
 - [MQTT Wristband GW Emulator](https://github.com/MONICA-Project/WristbandGwMqttEmulator)
 - [SCRAL](https://github.com/MONICA-Project/scral-framework) - MQTT Wristbands Module
@@ -13,23 +13,15 @@ This repository reports a working docker compose example of whole MONICA toolcha
 - Common Operational Picture (COP)
 
 In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
-i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction.
+i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction. 
 
-A simple example is shown in figure below. The points represents the location of each person with respect to the Ground Plane Position. 
+The output is shown on a web map available locally.
 
-![Density Map Figure](https://github.com/MONICA-Project/DockerGlobalWristbandSimulation/blob/master/chart_enudistributions.jpg) 
+## Disclaimer
 
-Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+This package shall be intended as a demonstrative software suite just to allow to concretely visualize and understand MONICA solution. 
 
-|  | 0 | 1 | 2 | 3 | 4 |
-| :---- | ---- | ---- | ---- | ---- | ---- |
-| **4**| 0 | 0 | 0 | 0 | 0 |
-| **3**| 0 | 0 | 0 | 0 | 0 |
-| **2**| 0 | 0 | 0 | 0 | 0 |
-| **1**| 4 | 1 | 1 | 1 | 1 |
-| **0**| 2 | 0 | 0 | 0 | 0 |
-
-Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+Such solution has been tested with success on limited number of devices (less than 10); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
 
 ## Repository Contents
 
@@ -41,8 +33,15 @@ In the following it is reported a quick overview of the current repository in te
 |environment| It contains files supporting tools for beginning setup project| [${REPO_ROOT}/environment](environment)|
 |volumes| Persistent Volumes for Docker containers launched (e.g. logs)| [${REPO_ROOT}/volumes](volumes)| 
 |tools| Bash script to startup environment for first usage| [${REPO_ROOT}/tools](tools)|
+|resources| Resource files for README and documentation|[${REPO_ROOT}/resources](resources) |
 
 ## Quick Start Guide
+
+## Resources Requirements
+
+In [Docker Statistics](resources/DockerStatistics.json), it is possible to check the disk occupation for each image. The total size of images on disk is around 13 GB.
+
+Solution has been tested with success on machine Ubuntu, CentOS and Windows 10 with at least 8 GB RAM.
 
 ### Getting Started
 <!-- Instruction to make the project up and running. -->
@@ -86,7 +85,13 @@ ${REPO_ROOT}:$ docker-compose up -d
 #### COP UI Web Portal (Map)
 
 On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!).
-Note that the first output could take some minutes before appearing.
+Then, go on the bottom of map and select Crowd Heatmap as indicated in the following screenshot. Note that the first output could take some minutes before appearing. 
+
+![Crowd Heatmap UI Selection](resources/COPUI_Screenshot_SelectCrowdHeatmap.png)
+
+The output should be similar to the following picture.
+
+![Crowd Heatmap COP UI](resources/COPUI_Screenshot.png)
 
 #### Real Time Check
 
@@ -122,9 +127,30 @@ Detailed documentation about environment variable is available in repositories a
 
 In the following are reported quick useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
 
-| Environment Variable | Meaning | Default Value | 
-| --------------- | --------------- | --------------- |
-|V_COUNT_WRISTBANDS|Number of Emulated Wristband|1000|
+| Environment Variable | Meaning | Default Value | Note|
+| --------------- | --------------- | --------------- |--------------- |
+|V_COUNT_WRISTBANDS|Number of Emulated Wristband|1000| Avoid to set number greater than 1100 |
+|V_BURST_INTERVAL_SECS|Interval sending burst interval| 40| Avoid to set number lower than 30|
+
+**NOTE**: This solution has been tested with success with default values reported in the table. It has to be remarked that bigger variation of such numbers has not been validated and can compromise the execution of demonstration and increase computational resources required by demo.
+
+## Crowd Heatmap Output explaination
+
+A simple example is shown in figure below. The points represents the location of each person with respect to the Ground Plane Position. 
+
+![Density Map Figure](resources/chart_enudistributions.jpg)
+
+Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+
+|  | 0 | 1 | 2 | 3 | 4 |
+| :---- | ---- | ---- | ---- | ---- | ---- |
+| **4**| 0 | 0 | 0 | 0 | 0 |
+| **3**| 0 | 0 | 0 | 0 | 0 |
+| **2**| 0 | 0 | 0 | 0 | 0 |
+| **1**| 4 | 1 | 1 | 1 | 1 |
+| **0**| 2 | 0 | 0 | 0 | 0 |
+
+Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
 
 ## Docker Compose Contents
 

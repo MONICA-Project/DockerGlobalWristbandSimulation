@@ -110,7 +110,7 @@ services:
     environment:
         MQTT_HOSTNAME: mosquitto
         MQTT_PORT: 1883
-        BURST_INTERVAL_SEC: 40
+        BURST_INTERVAL_SEC: ${V_BURST_INTERVAL_SECS}
         DEVICE_NUMBER: ${V_COUNT_WRISTBANDS}
         GOST_MQTT_PREFIX: "${V_APPSETTING_GOST_NAME}/"
        

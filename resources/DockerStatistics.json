@@ -1,0 +1,30 @@
+{
+	"Images": [
+		{"Repository": "monicaproject/hldfad_worker", "TagID": "02.06.01.08-alpine", "SizeMB": 517},
+		{"Repository": "monicaproject/monica-cop-examples", "TagID": "crowdwt", "SizeMB":1670},
+		{"Repository": "monicaproject/example-databases", "TagID": "CrowdCOPExample2", "SizeMB": 598},
+		{"Repository": "monicaproject/monica-cop-examples", "TagID": "crowd", "SizeMB": 1700},
+		{"Repository": "gostmqttemul_web", "TagID": "latest", "SizeMB":535},
+		{"Repository": "monicaproject/servicecatalogemulator", "TagID": "00.00.00.04-alpine", "SizeMB":535},
+		{"Repository": "monicaproject/copupdater", "TagID": "WristBand0.2", "SizeMB":355},
+		{"Repository": "antoniodefina1980/django-celery-unofficial", "TagID": "alpine-00.00.02.00", "SizeMB":510},
+		{"Repository": "osgeo/gdal", "TagID": "alpine-normal-latest", "SizeMB":191},
+		{"Repository": "monicaproject/servicecatalogemulator", "TagID": "00.00.00.03-alpine", "SizeMB":536},
+		{"Repository": "monicaproject/hldfad_worker", "TagID": "02.06.01.05-alpine", "SizeMB":512},
+		{"Repository": "antoniodefina1980/django-celery-unofficial", "TagID": "alpine-00.00.00.01", "SizeMB":510},
+		{"Repository": "monicaproject/wb_mqtt_emulator", "TagID": "latest", "SizeMB":1010},
+		{"Repository": "monicaproject/hldfad_worker_os", "TagID": "02.06.01.00", "SizeMB":1430},
+		{"Repository": "portainer/portainer", "TagID": "latest", "SizeMB":78.6},
+		{"Repository": "monicaproject/scral", "TagID": "wristband_mqtt", "SizeMB":125},
+		{"Repository": "geodan/gost", "TagID": "latest", "SizeMB":15.9},
+		{"Repository": "rabbitmq", "TagID": "latest", "SizeMB":151},
+		{"Repository": "monicaproject/copapi", "TagID": "0.1", "SizeMB":271},
+		{"Repository": "redis", "TagID": "latest", "SizeMB":98.2},
+		{"Repository": "busybox", "TagID": "latest", "SizeMB":1.22},
+		{"Repository": "nodered/node-red-docker", "TagID": "slim-v8", "SizeMB":119},
+		{"Repository": "mdillon/postgis", "TagID": "latest", "SizeMB":713},
+		{"Repository": "geodan/gost-db", "TagID": "latest", "SizeMB":144},
+		{"Repository": "toke/mosquitto", "TagID": "latest", "SizeMB":175},
+		{"Repository": "geodan/gost-dashboard", "TagID": "latest", "SizeMB":18.2}
+	]
+}
