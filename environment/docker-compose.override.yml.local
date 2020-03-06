@@ -21,7 +21,7 @@ services:
     environment:
       GOST_PREFIX: ${V_APPSETTING_GOST_NAME}
       LOCALHOST_MACHINE: ${V_LOCALHOST_MACHINE}
-      EXPOSED_MQTT_HOST: mosquitto
+      EXPOSED_MQTT_HOST: mqttbroker
       EXPOSED_MQTT_PORT: 1883
       GOST_THINGID_SFN: ${GOST_THINGID_SFN_VALUE}
       GOST_THINGID_WRISTBAND: ${GOST_THINGID_WRISTBANDS_VALUE}
@@ -103,40 +103,40 @@ services:
     depends_on:
         - dashboard
         - gost
-        - mosquitto
+        - mqttbroker
         - scral
     links:
-        - mosquitto
+        - mqttbroker
     environment:
-        MQTT_HOSTNAME: mosquitto
+        MQTT_HOSTNAME: mqttbroker
         MQTT_PORT: 1883
         BURST_INTERVAL_SEC: ${V_BURST_INTERVAL_SECS}
         DEVICE_NUMBER: ${V_COUNT_WRISTBANDS}
         GOST_MQTT_PREFIX: "${V_APPSETTING_GOST_NAME}/"
        
         STAGE_NAME_1: "WoodsTower Main"
-        DISTR_STAGE_1: 25
+        DISTR_STAGE_1: 45
         LAT_STAGE_1: 45.797197
         LON_STAGE_1: 4.952072
-        SIGMA_N_S_1: 400
-        SIGMA_E_O_1: 400
+        SIGMA_N_S_1: 500
+        SIGMA_E_O_1: 500
 
         STAGE_NAME_2: "WoodsTower Saint Denis"
-        DISTR_STAGE_2: 25
+        DISTR_STAGE_2: 20
         LAT_STAGE_2: 45.797434
         LON_STAGE_2: 4.952652
         SIGMA_N_S_2: 400
         SIGMA_E_O_2: 400
 
         STAGE_NAME_3: "WoodsTower Chapiteau"
-        DISTR_STAGE_3: 25
+        DISTR_STAGE_3: 15
         LAT_STAGE_3: 45.797425
         LON_STAGE_3: 4.950973
-        SIGMA_N_S_3: 400
-        SIGMA_E_O_3: 400
+        SIGMA_N_S_3: 200
+        SIGMA_E_O_3: 200
 
         STAGE_NAME_4: "WoodsTower Woodsflor"
-        DISTR_STAGE_4: 25
+        DISTR_STAGE_4: 20
         LAT_STAGE_4: 45.798159
         LON_STAGE_4: 4.952864
         SIGMA_N_S_4: 400

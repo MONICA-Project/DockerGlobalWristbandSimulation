@@ -62,12 +62,12 @@ services:
     depends_on:
         - dashboard
         - gost
-        - mosquitto
+        - mqttbroker
         - scral
     links:
-        - mosquitto
+        - mqttbroker
     environment:
-        MQTT_HOSTNAME: mosquitto
+        MQTT_HOSTNAME: mqttbroker
         MQTT_PORT: 1883
         BURST_INTERVAL_SEC: 20
         DEVICE_NUMBER: 50

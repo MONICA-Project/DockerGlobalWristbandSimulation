@@ -158,24 +158,24 @@ The following table shows the list of services and minimum explaination as they 
 
 | Service Name | Container Name | Short Description | Links | Depends on |
 | --------------- | --------------- | --------------- | --------------- | --------------- |
-| hldfad_worker| hldf_docker_celery_worker_${ENVTYPE} | High Level Data Fusion and Anomaly Detection Core | rabbit, redis, mosquitto, dashboard, worker_db, servicecatalog | rabbit, redis, mosquitto, dashboard, scral, wb_mqtt_emulator, servicecatalog|
+| hldfad_worker| hldf_docker_celery_worker_${ENVTYPE} | High Level Data Fusion and Anomaly Detection Core | rabbit, redis, mqttbroker, dashboard, worker_db, servicecatalog | rabbit, redis, mqttbroker, dashboard, scral, wb_mqtt_emulator, servicecatalog|
 | rabbit | hldf_docker_rabbit_${ENVTYPE} | Rabbit For Queue Management (support for hldfad_worker celery tasks) | None | None |
 | redis | hldf_docker_cache_redis_${ENVTYPE} | Temporarily cache for hldfad_worker | None| None |
 | node-red | gost-node-red_${ENVTYPE} |  | None| None |
-| mosquitto | gost-mosquitto-${ENVTYPE} | Broker MQTT as a middleware for SCRAL and hldfad_worker | None | None |
+| mqttbroker | gost-mqttbroker-${ENVTYPE} | Broker MQTT as a middleware for SCRAL and hldfad_worker | None | None |
 | gost-db | gost-db_${ENVTYPE} | DB for GOST | None | None |
-| gost | gost-gostreal_${ENVTYPE} | Real GOST Engine | None | mosquitto, gost-db |
+| gost | gost-gostreal_${ENVTYPE} | Real GOST Engine | None | mqttbroker, gost-db |
 | dashboard | gost_dashboard_${ENVTYPE} | Web services to get GOST Catalog with Things and Datastreams | None | gost |
-| scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | None | dashboard, gost, mosquitto |
+| scral | SCRAL-wb-MQTT_${ENVTYPE} | SCRAL protocol adapter-middleware | None | dashboard, gost, mqttbroker |
 | copdb | copdb_docker_${ENVTYPE} | COP DB | None | None |
-| copapi | copapi_docker_${ENVTYPE} | *Missing* | None | mosquitto, gost, copdb |
-| copui | copapi_docker_${ENVTYPE} | COP User Interface (Map View) | None | mosquitto, gost, copdb,copapi |
-| copupdater | copupdater_docker_${ENVTYPE} | *Missing* | None | copapi, gost, mosquitto,copdb |
+| copapi | copapi_docker_${ENVTYPE} | *Missing* | None | mqttbroker, gost, copdb |
+| copui | copapi_docker_${ENVTYPE} | COP User Interface (Map View) | None | mqttbroker, gost, copdb,copapi |
+| copupdater | copupdater_docker_${ENVTYPE} | *Missing* | None | copapi, gost, mqttbroker,copdb |
 | servicecatalog | wp6_servicecatalogemul_docker_${ENVTYPE} | WP6 Service Catalog (temporarily) | worker_emul_db | worker_emul_db |
 | worker_db | hldf_host_workerdb_${ENVTYPE} | PosgreSQL Database used by hldfad_worker to store output | None | None |
 | portainer | hldf_docker_portainer | ${PORTAINER_DOCKER_EXPOS_PORT} | 9000 | None |
 | worker_emul_db | hldf_host_workeremul_db_${ENVTYPE} | PosgreSQL Database to support servicecatalog  | None | servicecatalog |
-| wb_mqtt_emulator | WB-MQTT-Emulator | Wristband Observations Generator Emulator | mosquitto | dashboard,gost,mosquitto,scral |
+| wb_mqtt_emulator | WB-MQTT-Emulator | Wristband Observations Generator Emulator | mqttbroker | dashboard,gost,mqttbroker,scral |
 
 **NOTE**: *worker_emul_db* is used only from servicecatalog, which is a temporarily replacement of the official one (WP6 GOST Service Catalog)
 
@@ -204,8 +204,8 @@ The following table show the list of services with opened ports (inside subnet a
 | rabbit | Diagnostic | ${RABBITMQ_DOCKER_PORT_SERVICE} | 15672| None |
 | redis | Service | ${REDISCACHE_PORT} | 6379| hldfad_worker |
 | node-red | Service | 1880 | 1880| gost |
-| mosquitto | Service | 1883 | 1883| gost, scral, hldfad_worker|
-| mosquitto | Diagnostic | 9001 | 9001| None |
+| mqttbroker | Service | 1883 | 1883| gost, scral, hldfad_worker|
+| mqttbroker | Diagnostic | 9001 | 9001| None |
 | dashboard | Service | 8080 | 8080| gost, hldfad_worker |
 | scral | Service | 8000 | 8000| gost, hldfad_worker |
 | servicecatalog | Service | ${WEB_GOST_PORT} | ${V_SERVER_WEB_PORT} | hldfad_worker |
