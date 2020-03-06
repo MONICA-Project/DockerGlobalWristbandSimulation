@@ -84,7 +84,7 @@ ${REPO_ROOT}:$ docker-compose up -d
 
 #### COP UI Web Portal (Map)
 
-On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!).
+On [COPUI localhost:8900/crowd](http://127.0.0.1:8900/crowd) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!).
 Then, go on the bottom of map and select Crowd Heatmap as indicated in the following screenshot. Note that the first output could take some minutes before appearing. 
 
 ![Crowd Heatmap UI Selection](resources/COPUI_Screenshot_SelectCrowdHeatmap.png)
