@@ -129,8 +129,8 @@ In the following are reported quick useful variables reported in .env file gener
 
 | Environment Variable | Meaning | Default Value | Note|
 | --------------- | --------------- | --------------- |--------------- |
-|V_COUNT_WRISTBANDS|Number of Emulated Wristband|1000| Avoid to set number greater than 1100 |
-|V_BURST_INTERVAL_SECS|Interval sending burst interval| 40| Avoid to set number lower than 30|
+|V_COUNT_WRISTBANDS|Number of Emulated Wristband|1200| Avoid to set number greater than 1500 |
+|V_BURST_INTERVAL_SECS|Interval sending burst interval| 25| Avoid to set number lower than 15|
 
 **NOTE**: This solution has been tested with success with default values reported in the table. It has to be remarked that bigger variation of such numbers has not been validated and can compromise the execution of demonstration and increase computational resources required by demo.
 
