@@ -80,7 +80,7 @@ or under Windows Command Prompt:
 %REPO_ROOT%/tools> configure_docker_environment.bat dev
 ```
 
-**NOTE**: The environment consistent for such version of repository is local; dev is set just as an example for future extension of this repository.
+**NOTE(1)**: The environment consistent for such version of repository is local; dev is set just as an example for future extension of this repository.
 
 **NOTE(2)**: Sometimes could happen mistakes due to line termination difference Unix-Windows (when launching script under Unix environment or from git bash in Linux). Therefore, in case of trouble, before destroying your PC, just launch:
 
@@ -102,13 +102,21 @@ The output should be similar to the content of file [DockerConfig](resources/doc
 
 ### Run Docker Compose Solution
 
-After first configuration reported in Section [Startup]({#getting-started}), in order to run overall simulation, launch command from ${REPO_ROOT}:
+After first configuration reported in Section [Startup]({#getting-started}), it is necessary to download all the images. Before start, optionally it is possible to launch from ${REPO_ROOT}:
+
+```bash
+${REPO_ROOT}:$ docker-compose up --no-start
+```
+
+Then, for running simulation launch command from ${REPO_ROOT}:
 
 ```bash
 ${REPO_ROOT}:$ docker-compose up -d
 ```
 
-**NOTE**: In Linux environment it should be necessary to execute docker-compose command with administrator permissions. Therefore it should be necessary to add sudo before launching commands.
+**NOTE(1)**: The second command can also download images and launch running. The first is an additional check before effectively launch simulation.
+
+**NOTE(2)**: In Linux environment it should be necessary to execute docker-compose command with administrator permissions. Therefore it should be necessary to add sudo before launching commands.
 
 ### Check Execution
 
