@@ -21,7 +21,7 @@ The output is shown on a web map available locally.
 
 This package shall be intended as a demonstrative software suite just to allow to concretely visualize and understand MONICA solution. 
 
-Such solution has been tested with success on limited number of devices (less than 10); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
+Such solution has been tested with success on limited number of devices (less than 10); therefore, it is not possible to guarantee 100% successful execution of solution with all machine. It has to be remarked that such manual has been kept as simple as possible to pursue the usage of MONICA solution also to beginner of Back End development and docker solution.
 
 ## Repository Contents
 
