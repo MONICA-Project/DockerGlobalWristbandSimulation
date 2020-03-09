@@ -45,32 +45,60 @@ Solution has been tested with success on machine Ubuntu, CentOS and Windows 10 w
 
 ### Getting Started
 <!-- Instruction to make the project up and running. -->
-Ensuring that Docker Engine is correctly installed (see [Docker Engine Linux Page](https://docs.docker.com/install/linux/docker-ce/ubuntu/) for Linux or [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) for Windows). 
+#### Machine Setup
 
-Then, after clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command:
+First of all, ensuring that Docker Engine and git are correctly installed on machine. 
+
+In Windows, Docker and Docker compose are included in [Docker Desktop](https://docs.docker.com/docker-for-windows/install/), whereas in Linux, it is necessary to install them separately, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) and [Docker Compose](https://docs.docker.com/compose/install/). **NOTE**: Minimum Docker Compose version compliant with this solution (Version: 3.7) is 1.25.4. Check version with command:
 
 ```bash
-${REPO_ROOT}/tools:$ sh configure_docker_environment.sh local
+$ docker-compose --version
+```
+
+#### Startup Environment
+
+After clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command (Linux Bash):
+
+```bash
+${REPO_ROOT}/tools:$ bash configure_docker_environment.sh local
 ```
 
 or under Windows Command Prompt:
 
 ```console
-%REPO_ROOT%> configure_docker_environment.bat local
+%REPO_ROOT%/tools> configure_docker_environment.bat local
 ```
 
 To launch development environment (under construction) configuration, launch:
 ```bash
-${REPO_ROOT}/tools:$ sh configure_docker_environment.sh dev
+${REPO_ROOT}/tools:$ bash configure_docker_environment.sh dev
 ```
 
 or under Windows Command Prompt:
 
 ```console
-%REPO_ROOT%> configure_docker_environment.bat dev
+%REPO_ROOT%/tools> configure_docker_environment.bat dev
 ```
 
 **NOTE**: The environment consistent for such version of repository is local; dev is set just as an example for future extension of this repository.
+
+**NOTE(2)**: Sometimes could happen mistakes due to line termination difference Unix-Windows (when launching script under Unix environment or from git bash in Linux). Therefore, in case of trouble, before destroying your PC, just launch:
+
+```bash
+${REPO_ROOT}/tools:$ dos2unix configure_docker_environment.sh
+${REPO_ROOT}/tools:$ dos2unix repo_paths.sh
+${REPO_ROOT}/tools:$ dos2unix purge.sh
+```
+
+#### Check Environment
+
+In order to check that the environment is configured correctly, from ${REPO_ROOT} launch command:
+
+```bash
+${REPO_ROOT}:$ docker-compose config
+```
+
+The output should be similar to the content of file [DockerConfig](resources/dockercompose_config.local).
 
 ### Run Docker Compose Solution
 
@@ -116,7 +144,7 @@ If the historical informationm of previous running are not interested, on folder
 From bash shell, launch:
 
 ```bash
-${REPO_ROOT}/tools:$ sh purge.sh
+${REPO_ROOT}/tools:$ bash purge.sh
 ```
 
 **NOTE**: such script performs pruning of unused docker resources and it is useful to prevent big size occupation on disk after very long usage (more than 20 hours).
