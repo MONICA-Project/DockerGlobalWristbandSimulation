@@ -1,0 +1,397 @@
+networks:
+  monica_hldfad_net:
+    name: monica-globaltest-net-local
+services:
+  copapi:
+    container_name: copapi_docker_local
+    depends_on:
+    - copdb
+    - gost
+    - mqttbroker
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      CONNECTION_STR: Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+      GOST_PREFIX: GOST
+      GOST_SERVER: http://gost:8080/v1.0/
+      MEDIA_PATH: wwwroot/ora_shared/
+      TEST_TOKEN: 6ffdcacb-c485-499c-bce9-23f76d06aa36
+      URL_PREFIX: ''
+      USE_GOSTOBS: "false"
+    image: monicaproject/copapi:0.1
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 8800
+      target: 80
+  copdb:
+    container_name: copdb_docker_local
+    image: monicaproject/example-databases:CrowdCOPExample2
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 9998
+      target: 5432
+  copui:
+    container_name: copui_docker_local
+    depends_on:
+    - copapi
+    - copdb
+    - gost
+    - mqttbroker
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      CONNECTION_STR: Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+      COP_API_BASE_PATH: http://copapi/
+      COP_API_BASE_PATH_HUB: http://copapi/
+      COP_AUTH_TOKEN: 6ffdcacb-c485-499c-bce9-23f76d06aa36
+      GOST_PREFIX: GOST
+      GOST_SERVER: http://gost:8080/v1.0/
+      MONICA_THING_TYPE: wearables UWB
+      URL_PREFIX: ''
+      mqttServer: mqttbroker
+      signalR: "true"
+    image: monicaproject/monica-cop-examples:crowdwt
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 8900
+      target: 8080
+  copupdater:
+    container_name: copupdater_docker_local
+    depends_on:
+    - copapi
+    - copdb
+    - gost
+    - mqttbroker
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      CONNECTION_STR: Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+      COP_API_BASE_PATH: http://copapi/
+      COP_API_BASE_PATH_HUB: http://copapi/
+      COP_AUTH_TOKEN: 6ffdcacb-c485-499c-bce9-23f76d06aa36
+      GOST_PREFIX: GOST
+      GOST_SERVER: http://gost:8080/v1.0/
+      MONICA_THING_TYPE: PeopleHeatmap
+      URL_PREFIX: ''
+      mqttServer: mqttbroker
+      signalR: "false"
+    image: monicaproject/copupdater:WristBand0.2
+    networks:
+      monica_hldfad_net: {}
+  dashboard:
+    container_name: gost_dashboard_local
+    depends_on:
+    - gost
+    image: geodan/gost-dashboard
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 8080
+      target: 8080
+  gost:
+    container_name: gost-gostreal_local
+    depends_on:
+    - gost-db
+    - mqttbroker
+    environment:
+      GOST_DB_HOST: gost-db
+      GOST_MQTT_HOST: mqttbroker
+    image: geodan/gost
+    networks:
+      monica_hldfad_net: {}
+    volumes:
+    - gost_conf:/gostserver/config:rw
+  gost-db:
+    container_name: gost-db_local
+    environment:
+      POSTGRES_DB: gost
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    image: geodan/gost-db
+    networks:
+      monica_hldfad_net: {}
+    volumes:
+    - postgis:/var/lib/postgresql/data:rw
+  hldfad_worker:
+    container_name: hldf_docker_celery_worker_local
+    depends_on:
+    - dashboard
+    - mqttbroker
+    - rabbit
+    - redis
+    - scral
+    - servicecatalog
+    - wb_mqtt_emulator
+    - worker_db
+    environment:
+      APPSETTINGS_ENABLE_IMMEDIATEELABORATION_FEEDBYNUMBEROBS: "True"
+      APPSETTING_ENABLE_EMPTY_CROWD_HEATMAP: "False"
+      APPSETTING_ENABLE_OBS_IOTIDRETRIEVE: "False"
+      APPSETTING_ENABLE_RANDOM_DENSITYMATRIX: "False"
+      APPSETTING_ENABLE_RANDOM_FAKEQUEUEDETECTION: "False"
+      APPSETTING_ENABLE_RANDOM_OUTPUT: "False"
+      APPSETTING_ENABLE_RANDOM_QUEUEDETECTIONALERT: "False"
+      APPSETTING_GOST_NAME: GOST
+      APPSETTING_INTERVAL_OBS_VALIDITY_SECS: '-1'
+      APPSETTING_MINIMUM_ACCEPTWRISTBAND_START: '1200'
+      APPSETTING_MONITORINGAREA_CELLSIZE_M: '10'
+      APPSETTING_MONITORINGAREA_HORIZONTALSIZE_M: '300'
+      APPSETTING_MONITORINGAREA_LATITUDE: '45.7968451744'
+      APPSETTING_MONITORINGAREA_LONGITUDE: '4.95029322898'
+      APPSETTING_MONITORINGAREA_VERTICALSIZE_M: '200'
+      APPSETTING_OBSERVATION_DEBUG_INTERVALNUMBERNOTIFICATION: '100'
+      APPSETTING_TASK_ALIVEAPP_FREQ_SECS: '100'
+      APPSETTING_TASK_ELABORATION_FREQ_SECS: '200'
+      CACHEREDIS_DEFAULT_HOSTNAME: redis
+      CACHEREDIS_DEFAULT_PORT: 6379
+      CONFENVIRONMENT_DEBUG: "False"
+      CONFENVIRONMENT_DEBUGTEMPLATE: "False"
+      CONFENVIRONMENT_GLOBALINFO: LOCAL
+      DB_NAME: worker_db
+      DB_PASSWORD: test
+      DB_PORT_5432_TCP_ADDR: worker_db
+      DB_PORT_5432_TCP_PORT: '5432'
+      DB_USER: test
+      DJANGO_SETTINGS_MODULE: shared.settings.appglobalconf
+      ENV_CATALOG_PASSWORD: ''
+      ENV_CATALOG_PORT: '8080'
+      ENV_CATALOG_USERNAME: ''
+      ENV_MQTT_OBSERVATION_PORT: '1883'
+      ENV_MQTT_OBSERVATION_URL: mqttbroker
+      ENV_SELECT_DB_TYPE: posgresql
+      ENV_WEB_BASE_URL: dashboard
+      MOSQUITTO_PASSWORD: ''
+      MOSQUITTO_USERNAME: ''
+      OUTPUT_MQTTBROKER_PASSWORD: ''
+      OUTPUT_MQTTBROKER_USERNAME: ''
+      RABBITMQ_DEFAULT_PASS: monica123
+      RABBITMQ_DEFAULT_USER: monica
+      RABBITMQ_HOSTNAME: rabbit
+      RABBITMQ_PORT: 5672
+      WP6_CATALOG_CONNECTIONPORT: '8001'
+      WP6_CATALOG_CONNECTIONURL: servicecatalog
+    hostname: hldf_host_celery_worker_local
+    image: monicaproject/hldfad_worker:02.06.01.08-alpine
+    links:
+    - dashboard
+    - mqttbroker
+    - rabbit
+    - redis
+    - servicecatalog
+    - worker_db
+    networks:
+      monica_hldfad_net: {}
+    restart: always
+    volumes:
+    - /home/adefina/monica/DockerGlobalWristbandSimulation/volumes/monica_celery/appconfig:/appconfig:rw
+    - /home/adefina/monica/DockerGlobalWristbandSimulation/volumes/monica_celery/logs:/logs:rw
+    - /home/adefina/monica/DockerGlobalWristbandSimulation/volumes/monica_celery/var/run/celery:/var/run/celery:rw
+  mqttbroker:
+    container_name: gost-mqttbroker-local
+    image: toke/mosquitto
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 1883
+      target: 1883
+    - published: 9001
+      target: 9001
+    volumes:
+    - mosquitto_conf:/mqtt/config:ro
+    - mosquitto_data:/mqtt/data:rw
+  node-red:
+    container_name: gost-node-red_local
+    image: nodered/node-red-docker:slim-v8
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 1880
+      target: 1880
+    volumes:
+    - nodered:/data:rw
+  portainer:
+    command: -H unix:///var/run/docker.sock
+    container_name: hldf_docker_portainer
+    image: portainer/portainer
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 9000
+      target: 9000
+    restart: always
+    volumes:
+    - portainer_data:/data:rw
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+  rabbit:
+    container_name: hldf_docker_rabbit_local
+    environment:
+      RABBITMQ_DEFAULT_PASS: monica123
+      RABBITMQ_DEFAULT_USER: monica
+      RABBITMQ_DEFAULT_VHOST: /
+      RABBITMQ_HOSTNAME: rabbit_local
+      RABBITMQ_LOG_BASE: /var/log/rabbitmq
+    hostname: hldf_rabbit_local
+    image: rabbitmq:latest
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 5672
+      target: 5672
+    - published: 15672
+      target: 15672
+  redis:
+    container_name: hldf_docker_cache_redis_local
+    hostname: hldf_host_cache_redis_local
+    image: redis:latest
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 6379
+      target: 6379
+    sysctls:
+      net.core.somaxconn: '1024'
+  scral:
+    container_name: SCRAL-wb-MQTT_local
+    depends_on:
+    - dashboard
+    - gost
+    - mqttbroker
+    environment:
+      CONFIG: custom
+      OGC_SERVER_ADDRESS: http://dashboard:8080/v1.0
+      PUB_BROKER_PORT: 1883
+      PUB_BROKER_URI: mqttbroker
+      SUB_BROKER_URI: mqttbroker
+      VERBOSE: 1
+    image: monicaproject/scral:wristband_mqtt_v2
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 8000
+      target: 8000
+    restart: on-failure
+  servicecatalog:
+    container_name: wp6_servicecatalogemul_docker_local
+    depends_on:
+    - worker_emul_db
+    environment:
+      DB_NAME: emul_db
+      DB_PASSWORD: test
+      DB_PORT_5432_TCP_ADDR: worker_emul_db
+      DB_PORT_5432_TCP_PORT: 5433
+      DB_USER: test
+      EXPOSED_MQTT_HOST: mqttbroker
+      EXPOSED_MQTT_PORT: 1883
+      GOST_PREFIX: GOST
+      GOST_THINGID_SFN: '1'
+      GOST_THINGID_WRISTBAND: '2'
+      LOCALHOST_MACHINE: 192.168.1.164
+      SERVER_WEB_PORT: '8001'
+    expose:
+    - '3002'
+    - '8001'
+    hostname: wp6_servicecatalogemul_host_local
+    image: monicaproject/servicecatalogemulator:00.00.00.04-alpine
+    links:
+    - worker_emul_db
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 3002
+      target: 3001
+    - published: 8001
+      target: 8001
+    restart: on-failure
+    volumes:
+    - /home/adefina/monica/DockerGlobalWristbandSimulation/volumes/web/logs:/logs:rw
+  wb_mqtt_emulator:
+    container_name: WB-MQTT-Emulator
+    depends_on:
+    - dashboard
+    - gost
+    - mqttbroker
+    - scral
+    environment:
+      BURST_INTERVAL_SEC: '25'
+      DEVICE_NUMBER: '1200'
+      DISTR_STAGE_1: 45
+      DISTR_STAGE_2: 20
+      DISTR_STAGE_3: 15
+      DISTR_STAGE_4: 20
+      GOST_MQTT_PREFIX: GOST/
+      LAT_STAGE_1: 45.797197
+      LAT_STAGE_2: 45.797434
+      LAT_STAGE_3: 45.797425
+      LAT_STAGE_4: 45.798159
+      LON_STAGE_1: 4.952072
+      LON_STAGE_2: 4.952652
+      LON_STAGE_3: 4.950973
+      LON_STAGE_4: 4.952864
+      MQTT_HOSTNAME: mqttbroker
+      MQTT_PORT: 1883
+      SIGMA_E_O_1: 500
+      SIGMA_E_O_2: 400
+      SIGMA_E_O_3: 200
+      SIGMA_E_O_4: 400
+      SIGMA_N_S_1: 500
+      SIGMA_N_S_2: 400
+      SIGMA_N_S_3: 200
+      SIGMA_N_S_4: 400
+      STAGE_NAME_1: WoodsTower Main
+      STAGE_NAME_2: WoodsTower Saint Denis
+      STAGE_NAME_3: WoodsTower Chapiteau
+      STAGE_NAME_4: WoodsTower Woodsflor
+    image: monicaproject/wb_mqtt_emulator:latest
+    links:
+    - mqttbroker
+    networks:
+      monica_hldfad_net: {}
+  worker_db:
+    command: -p 5432
+    container_name: hldf_docker_workerdb_local
+    environment:
+      POSTGRES_DB: worker_db
+      POSTGRES_PASS: test
+      POSTGRES_USER: test
+    expose:
+    - '5432'
+    hostname: hldf_host_workerdb_local
+    image: mdillon/postgis:latest
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 5432
+      target: 5432
+    restart: unless-stopped
+    volumes:
+    - /var/lib/postgresql/data
+  worker_emul_db:
+    command: -p 5433
+    container_name: hldf_docker_workeremul_local
+    environment:
+      POSTGRES_DB: emul_db
+      POSTGRES_PASS: test
+      POSTGRES_USER: test
+    expose:
+    - '5433'
+    hostname: hldf_host_workeremul_db_local
+    image: mdillon/postgis:latest
+    networks:
+      monica_hldfad_net: {}
+    ports:
+    - published: 5433
+      target: 5433
+    restart: unless-stopped
+    volumes:
+    - /var/lib/postgresql/data
+version: '3.7'
+volumes:
+  gost_conf: {}
+  mosquitto_conf: {}
+  mosquitto_data: {}
+  nodered: {}
+  portainer_data: {}
+  postgis: {}
+  worker_db_data: {}
+  worker_emul_db_data: {}
+
