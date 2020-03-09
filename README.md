@@ -108,6 +108,8 @@ After first configuration reported in Section [Startup]({#getting-started}), in 
 ${REPO_ROOT}:$ docker-compose up -d
 ```
 
+**NOTE**: In Linux environment it should be necessary to execute docker-compose command with administrator permissions. Therefore it should be necessary to add sudo before launching commands.
+
 ### Check Execution
 
 #### COP UI Web Portal (Map)
