@@ -180,7 +180,8 @@ A simple example is shown in figure below. The points represents the location of
 
 Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
 
-
+|       |      |      |      |      |      |
+| :---- | ---- | ---- | ---- | ---- | ---- |
 | **4** | 0 | 0 | 0 | 0 | 0 |
 | **3** | 0 | 0 | 0 | 0 | 0 |
 | **2** | 0 | 0 | 0 | 0 | 0 |
