@@ -1,8 +1,8 @@
-# Docker Compose Complete MONICA Toolchain Example 
+# Docker Compose Crowd Management Toolchain Example 
 
 ## Overview
 
-This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization. Main components are the following:
+This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization, for the Crowd Management use case. Main components are reported in the following:
 
 - [MQTT Wristband GW Emulator](https://github.com/MONICA-Project/WristbandGwMqttEmulator)
 - [SCRAL](https://github.com/MONICA-Project/scral-framework) - MQTT Wristbands Module
@@ -12,16 +12,15 @@ This repository reports a self-consistent docker compose demonstration of whole 
 - [High Level Data Fusion](https://github.com/MONICA-Project/HLDFAD_SourceCode)
 - Common Operational Picture (COP)
 
-In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
-i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction. 
+In particular, such example diplays a Crowd Heatmap calculated on the basis of wristband positions genereted within the Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, size 300 m x 200 m rectangle area, cell size 10 m x 10 m). The whole are is subdivided in squared cells. Each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. The crowd density map is calculated by counting the occurrency of wristbands positions within each cell.
 
 The output is shown on a web map available locally.
 
 ## Disclaimer
 
-This package shall be intended as a demonstrative software suite just to allow to concretely visualize and understand MONICA solution. 
+This package shall be intended as a demonstrative software suite just to concretely allow the visualization of the results and understand the MONICA solution. 
 
-Such solution has been tested with success on limited number of devices (less than 10); therefore, it is not possible to guarantee 100% successful execution of solution with all machine. It has to be remarked that such manual has been kept as simple as possible to pursue the usage of MONICA solution also to beginner of Back End development and docker solution.
+Such solution has been tested with success on limited number of devices (less than 1100); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
 
 ## Repository Contents
 
@@ -102,7 +101,7 @@ The output should be similar to the content of file [DockerConfig](resources/doc
 
 ### Run Docker Compose Solution
 
-After first configuration reported in Section [Startup]({#getting-started}), it is necessary to download all the images. Before start, optionally it is possible to launch from ${REPO_ROOT}:
+After a first configuration reported in Section [Startup]({#getting-started}), it is necessary to download all the images. Before start, optionally it is possible to launch from ${REPO_ROOT}:
 
 ```bash
 ${REPO_ROOT}:$ docker-compose up --no-start
@@ -133,8 +132,8 @@ The output should be similar to the following picture.
 
 #### Real Time Check
 
-The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
-connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
+The solution includes an instance of portainer, that should run on localhost:9000. Have a look at the containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
+connecting to MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
 In the following, the default configuration to retrieve output: 
 - **Crowd Heatmap Output Topic**: GOST/Datastreams(13151)/Observations
 - **MQTT URL**: 127.0.0.1:1883
@@ -159,11 +158,11 @@ ${REPO_ROOT}/tools:$ bash purge.sh
 
 **NOTE**: such script performs pruning of unused docker resources and it is useful to prevent big size occupation on disk after very long usage (more than 20 hours).
 
-## Environment Variable
+## Environment Variables
 
-Detailed documentation about environment variable is available in repositories and dockerhubs readme (check Section [Repository and Dockerhub](#source-code-repository-and-dockerhub-images)). 
+Detailed documentation about environment variables is available in repositories and dockerhubs readme (check Section [Repository and Dockerhub](#source-code-repository-and-dockerhub-images)). 
 
-In the following are reported quick useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
+In the following are reported some useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
 
 | Environment Variable | Meaning | Default Value | Note|
 | --------------- | --------------- | --------------- |--------------- |
@@ -178,7 +177,7 @@ A simple example is shown in figure below. The points represents the location of
 
 ![Density Map Figure](resources/chart_enudistributions.jpg)
 
-Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+Considering the ground plane position unknown and geographic area of 500 m x 500 m with cells 100 m x 100 m, the corresponding generated density map is:
 
 |       |      |      |      |      |      |
 | :---- | ---- | ---- | ---- | ---- | ---- |
@@ -189,7 +188,7 @@ Considering the ground plane position incognite and geographic area of 500 m x 5
 | **0** | 2 | 0 | 0 | 0 | 0 |
 |       | **0** | **1** | **2** | **3** | **4** |
 
-Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=1, Col=0) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+Note that each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. Cell(0,0) represents the Ground Plane Position. For instance, following this nomenclature, within the Cell (Row=1, Col=0) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to the Ground Plane Position.
 
 ## Docker Compose Contents
 
