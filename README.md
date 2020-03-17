@@ -187,6 +187,7 @@ Considering the ground plane position incognite and geographic area of 500 m x 5
 | **2**| 0 | 0 | 0 | 0 | 0 |
 | **1**| 4 | 1 | 1 | 1 | 1 |
 | **0**| 2 | 0 | 0 | 0 | 0 |
+|      | 0 | 1 | 2 | 3 | 4 |
 
 Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=1, Col=0) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
 
