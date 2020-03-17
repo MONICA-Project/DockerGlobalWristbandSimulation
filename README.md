@@ -149,7 +149,7 @@ Considering the ground plane position unknown and geographic area of 500 m x 500
 | **1**| 4 | 1 | 1 | 1 | 1 |
 | **0**| 2 | 0 | 0 | 0 | 0 |
 
-Note that each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. Cell(0,0) represents the Ground Plane Position. For instance, following this nomenclature, within the Cell (Row=0, Col=1) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to the Ground Plane Position.
+Note that each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. Cell(0,0) represents the Ground Plane Position. For instance, following this nomenclature, within the Cell (Row=1, Col=0) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to the Ground Plane Position.
 
 ## Docker Compose Contents
 
