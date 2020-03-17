@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # NOTE: this command must be called with 
 
@@ -12,7 +12,7 @@ else
   CONF="$1"
 fi
 
-source ${PWD}/repo_paths.sh
+source "${PWD}/repo_paths.sh"
 
 if [ -f $PATH_REPO/docker-compose.override.yml ]; then rm $PATH_REPO/docker-compose.override.yml; fi
 if [ -f $PATH_REPO/.env ]; then rm $PATH_REPO/.env; fi

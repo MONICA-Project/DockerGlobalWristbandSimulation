@@ -85,13 +85,13 @@ services:
         links:
           - rabbit
           - redis
-          - mosquitto
+          - mqttbroker
           - dashboard
         depends_on:
           - rabbit
           - redis
           - scral
-          - mosquitto
+          - mqttbroker
           - dashboard
 
     redis:
@@ -115,15 +115,15 @@ services:
             - "1880:1880"
         networks:
           - monica_hldfad_net            
-    mosquitto:
-        container_name: gost-mosquitto-${ENVTYPE}
+    mqttbroker:
+        container_name: gost-mqttbroker-${ENVTYPE}
         image: toke/mosquitto
         volumes:
             - mosquitto_data:/mqtt/data
             - mosquitto_conf:/mqtt/config:ro
         ports:
-            - "1883:1883"
-            - "9001:9001"
+            - "${MOSQUITTO_EXPOSED_PORT_SERVICE}:1883"
+            - "${MOSQUITTO_EXPOSED_PORT_DIAGNOSTIC}:9001"
         networks:
           - monica_hldfad_net            
     gost-db:
@@ -143,11 +143,11 @@ services:
         volumes:
             - gost_conf:/gostserver/config
         depends_on:
-            - mosquitto
+            - mqttbroker
             - gost-db
         environment:
             GOST_DB_HOST: gost-db
-            GOST_MQTT_HOST: mosquitto
+            GOST_MQTT_HOST: mqttbroker
         networks:
           - monica_hldfad_net            
     dashboard:
@@ -162,15 +162,14 @@ services:
           
     # SCRAL 
     scral:
-        image: monicaproject/scral:wristband_mqtt
+        image: monicaproject/scral:wristband_mqtt_v2
         container_name: "SCRAL-wb-MQTT_${ENVTYPE}"
-        restart: always
         ports:
             - "8000:8000"
         depends_on:
             - dashboard
             - gost
-            - mosquitto
+            - mqttbroker
         restart: on-failure
         environment:
             ### Necessary to enable other env variables
@@ -178,7 +177,7 @@ services:
             # MODULE_NAME: "SCRAL"
             # ENDPOINT_URL: "localhost"
             # ENDPOINT_PORT: 8000
-            PUB_BROKER_URI: mosquitto
+            PUB_BROKER_URI: mqttbroker
             PUB_BROKER_PORT: 1883
             # PUB_BROKER_KEEPALIVE: 60
             # GOST_MQTT_PREFIX: GOST/
@@ -193,7 +192,7 @@ services:
 
             ### only for module with MQTT resource manager
             # SUB_BROKER_URI: "iot.hamburg.de"
-            SUB_BROKER_URI: mosquitto
+            SUB_BROKER_URI: mqttbroker
 
         networks:
           - monica_hldfad_net
@@ -213,7 +212,7 @@ services:
         ports:
             - "8800:80"
         depends_on:
-             - mosquitto
+             - mqttbroker
              - gost
              - copdb
         environment:
@@ -232,7 +231,7 @@ services:
         image: monicaproject/copupdater:WristBand0.2
         container_name: copupdater_docker_${ENVTYPE}
         depends_on:
-          - mosquitto
+          - mqttbroker
           - gost
           - copapi
           - copdb
@@ -244,7 +243,7 @@ services:
           - COP_API_BASE_PATH_HUB=http://copapi/
           - COP_API_BASE_PATH=http://copapi/
           - GOST_SERVER=http://gost:8080/v1.0/
-          - mqttServer=mosquitto
+          - mqttServer=mqttbroker
           - URL_PREFIX=
           - ASPNETCORE_ENVIRONMENT=Development
           - signalR=false
@@ -257,7 +256,7 @@ services:
         ports:
           - "8900:8080"
         depends_on:
-          - mosquitto
+          - mqttbroker
           - gost
           - copapi
           - copdb   
@@ -269,7 +268,7 @@ services:
           - COP_API_BASE_PATH_HUB=http://copapi/
           - COP_API_BASE_PATH=http://copapi/
           - GOST_SERVER=http://gost:8080/v1.0/
-          - mqttServer=mosquitto
+          - mqttServer=mqttbroker
           - URL_PREFIX=
           - ASPNETCORE_ENVIRONMENT=Development
           - signalR=true          

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # NOTE: this command must be called with 
 
