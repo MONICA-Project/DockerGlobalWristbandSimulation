@@ -1,8 +1,8 @@
-# Docker Compose Complete MONICA Toolchain Example 
+# Docker Compose Crowd Management Toolchain Example 
 
 ## Overview
 
-This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization, for the Crowd Monitoring use case. Main components are reported in the following:
+This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization, for the Crowd Management use case. Main components are reported in the following:
 
 - [MQTT Wristband GW Emulator](https://github.com/MONICA-Project/WristbandGwMqttEmulator)
 - [SCRAL](https://github.com/MONICA-Project/scral-framework) - MQTT Wristbands Module
@@ -12,8 +12,7 @@ This repository reports a self-consistent docker compose demonstration of whole 
 - [High Level Data Fusion](https://github.com/MONICA-Project/HLDFAD_SourceCode)
 - Common Operational Picture (COP)
 
-In particular, such example diplays a Crowd Heatmap calculated on the basis of wristband positions genereted within the Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
-i.e. the computation of occurrency of wristbands positions within geospatial density map on the surface, with rows increasing toward the North and columns increasing toward the East direction. 
+In particular, such example diplays a Crowd Heatmap calculated on the basis of wristband positions genereted within the Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, size 300 m x 200 m rectangle area, cell size 10 m x 10 m). The whole are is subdivided in squared cells. Each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. The crowd density map is calculated by counting the occurrency of wristbands positions within each cell.
 
 The output is shown on a web map available locally.
 
@@ -140,7 +139,7 @@ A simple example is shown in figure below. The points represents the location of
 
 ![Density Map Figure](resources/chart_enudistributions.jpg)
 
-Considering the ground plane position unknown and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+Considering the ground plane position unknown and geographic area of 500 m x 500 m with cells 100 m x 100 m, the corresponding generated density map is:
 
 |  | 0 | 1 | 2 | 3 | 4 |
 | :---- | ---- | ---- | ---- | ---- | ---- |
@@ -150,7 +149,7 @@ Considering the ground plane position unknown and geographic area of 500 m x 500
 | **1**| 4 | 1 | 1 | 1 | 1 |
 | **0**| 2 | 0 | 0 | 0 | 0 |
 
-Where Cell(0,0) is the Ground Plane Position. In this case, it means that within the Cell (Row=0, Col=1) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+Note that each cell is indexed with a row index increasing toward the North direction and a column index increasing toward the East direction. Cell(0,0) represents the Ground Plane Position. For instance, following this nomenclature, within the Cell (Row=0, Col=1) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to the Ground Plane Position.
 
 ## Docker Compose Contents
 
