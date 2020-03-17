@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization. Main components are the following:
+This repository reports a self-consistent docker compose demonstration of whole MONICA toolchain, from data simulation to visualization, for the Crowd Monitoring use case. Main components are reported in the following:
 
 - [MQTT Wristband GW Emulator](https://github.com/MONICA-Project/WristbandGwMqttEmulator)
 - [SCRAL](https://github.com/MONICA-Project/scral-framework) - MQTT Wristbands Module
@@ -12,16 +12,16 @@ This repository reports a self-consistent docker compose demonstration of whole 
 - [High Level Data Fusion](https://github.com/MONICA-Project/HLDFAD_SourceCode)
 - Common Operational Picture (COP)
 
-In particular, such example generates Crowd Heatmap calculated from Wristband locations within Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
-i.e. the computation of occurrency of localization within geospatial density map on the surface, with rows increasing with respect to the North and columns increasing with respect to East direction. 
+In particular, such example diplays a Crowd Heatmap calculated on the basis of wristband positions genereted within the Woodstower geographic area (Ground Plane Position: Latitude: 45.7968451744, Longitude: 4.95029322898, 300 m x 200 m rectangle area, cell size 10 m x 10 m), 
+i.e. the computation of occurrency of wristbands positions within geospatial density map on the surface, with rows increasing toward the North and columns increasing toward the East direction. 
 
 The output is shown on a web map available locally.
 
 ## Disclaimer
 
-This package shall be intended as a demonstrative software suite just to allow to concretely visualize and understand MONICA solution. 
+This package shall be intended as a demonstrative software suite just to concretely allow the visualization of the results and understand the MONICA solution. 
 
-Such solution has been tested with success on limited number of devices (less than 10); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
+Such solution has been tested with success on limited number of devices (less than 1100); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
 
 ## Repository Contents
 
@@ -47,7 +47,7 @@ Solution has been tested with success on machine Ubuntu, CentOS and Windows 10 w
 <!-- Instruction to make the project up and running. -->
 Ensuring that Docker Engine is correctly installed (see [Docker Engine Linux Page](https://docs.docker.com/install/linux/docker-ce/ubuntu/) for Linux or [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) for Windows). 
 
-Then, after clone current git, from bash shell go to ${REPO_ROOT}/tools folder and launch command:
+Then, after having cloned the current git, from bash shell go to ${REPO_ROOT}/tools folder and type the command:
 
 ```bash
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh local
@@ -59,7 +59,7 @@ or under Windows Command Prompt:
 %REPO_ROOT%> configure_docker_environment.bat local
 ```
 
-To launch development environment (under construction) configuration, launch:
+To launch development environment (under construction) configuration, type:
 ```bash
 ${REPO_ROOT}/tools:$ sh configure_docker_environment.sh dev
 ```
@@ -74,7 +74,7 @@ or under Windows Command Prompt:
 
 ### Run Docker Compose Solution
 
-After first configuration reported in Section [Startup]({#getting-started}), in order to run overall simulation, launch command from ${REPO_ROOT}:
+After a first configuration reported in Section [Startup]({#getting-started}), in order to run overall simulation, type the command from ${REPO_ROOT}:
 
 ```bash
 ${REPO_ROOT}:$ docker-compose up -d
@@ -84,8 +84,8 @@ ${REPO_ROOT}:$ docker-compose up -d
 
 #### COP UI Web Portal (Map)
 
-On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on geographic map (username: admin@monica-cop.com, password: CROWD2019!).
-Then, go on the bottom of map and select Crowd Heatmap as indicated in the following screenshot. Note that the first output could take some minutes before appearing. 
+On [COPUI localhost:8900](http://127.0.0.1:8900) there is the COP User Interface that runs and shows the evolution of crowd heatmap with refresh overlapped on a geographic map (username: admin@monica-cop.com, password: CROWD2019!).
+Then, go on the bottom of the map and select Crowd Heatmap as indicated in the following screenshot. Note that the first Crowd Heatmap could take some minutes before appearing on the geographic map. 
 
 ![Crowd Heatmap UI Selection](resources/COPUI_Screenshot_SelectCrowdHeatmap.png)
 
@@ -95,8 +95,8 @@ The output should be similar to the following picture.
 
 #### Real Time Check
 
-The solution includes an instance of portainer, that should run on localhost:9000. Have a look on containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
-connecting on MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
+The solution includes an instance of portainer, that should run on localhost:9000. Have a look at the containers to check if they are correctly running or not. Then, it is possible to check with a client MQTT (e.g. [MQTT.fx](https://mqttfx.jensd.de/)), 
+connecting to MQTT Broker on localhost:1883, subscribing to topic: ${V_APPSETTING_GOST_NAME}/Datastreams(13151)/Observations. 
 In the following, the default configuration to retrieve output: 
 - **Crowd Heatmap Output Topic**: GOST/Datastreams(13151)/Observations
 - **MQTT URL**: 127.0.0.1:1883
@@ -121,26 +121,26 @@ ${REPO_ROOT}/tools:$ sh purge.sh
 
 **NOTE**: such script performs pruning of unused docker resources and it is useful to prevent big size occupation on disk after very long usage (more than 20 hours).
 
-## Environment Variable
+## Environment Variables
 
-Detailed documentation about environment variable is available in repositories and dockerhubs readme (check Section [Repository and Dockerhub](#source-code-repository-and-dockerhub-images)). 
+Detailed documentation about environment variables is available in repositories and dockerhubs readme (check Section [Repository and Dockerhub](#source-code-repository-and-dockerhub-images)). 
 
-In the following are reported quick useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
+In the following are reported some useful variables reported in .env file generated after startup procedure. It allows to modify the behaviour of the simulation. Handle with care!
 
 | Environment Variable | Meaning | Default Value | Note|
 | --------------- | --------------- | --------------- |--------------- |
 |V_COUNT_WRISTBANDS|Number of Emulated Wristband|1000| Avoid to set number greater than 1100 |
 |V_BURST_INTERVAL_SECS|Interval sending burst interval| 40| Avoid to set number lower than 30|
 
-**NOTE**: This solution has been tested with success with default values reported in the table. It has to be remarked that bigger variation of such numbers has not been validated and can compromise the execution of demonstration and increase computational resources required by demo.
+**NOTE**: This solution has been tested with success with default values reported in the table. It has to be remarked that bigger variation of such numbers have not been validated and can compromise the execution of the demonstration and as a consequence increase required computational resources.
 
 ## Crowd Heatmap Output explaination
 
-A simple example is shown in figure below. The points represents the location of each person with respect to the Ground Plane Position. 
+A simple example is shown in figure below. The points represents the location of each person/wristband with respect to the Ground Plane Position. 
 
 ![Density Map Figure](resources/chart_enudistributions.jpg)
 
-Considering the ground plane position incognite and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
+Considering the ground plane position unknown and geographic area of 500 m x 500 m with cells 100 m x 100 m, the generated density map is:
 
 |  | 0 | 1 | 2 | 3 | 4 |
 | :---- | ---- | ---- | ---- | ---- | ---- |
@@ -150,7 +150,7 @@ Considering the ground plane position incognite and geographic area of 500 m x 5
 | **1**| 4 | 1 | 1 | 1 | 1 |
 | **0**| 2 | 0 | 0 | 0 | 0 |
 
-Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+Where Cell(0,0) is the Ground Plane Position. In this case, it means that within the Cell (Row=0, Col=1) there are 4 people/wristbands in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
 
 ## Docker Compose Contents
 
