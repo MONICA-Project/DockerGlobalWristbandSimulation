@@ -188,7 +188,7 @@ Considering the ground plane position incognite and geographic area of 500 m x 5
 | **1**| 4 | 1 | 1 | 1 | 1 |
 | **0**| 2 | 0 | 0 | 0 | 0 |
 
-Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=0, Col=1) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
+Where Cell(0,0) is the Ground Plane Position. In this case, it means that in Cell (Row=1, Col=0) there are 4 people in a space of 100 m x 100 m, 100 m North and 0 m East with respect to Ground Plane Position.
 
 ## Docker Compose Contents
 
