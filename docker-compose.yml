@@ -241,7 +241,7 @@ services:
           
     copdb:
         container_name: "COP_DB_${ENVTYPE}"
-        image: "monicaproject/crowdcopwithcamera:0.1"
+        image: "monicaproject/crowd-cop-db-with-camera:0.2"
         ports:
           - "9998:5432"
         networks:
