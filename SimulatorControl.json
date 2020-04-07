@@ -1,0 +1,255 @@
+{
+  "simulation": [
+    {
+      "name": "CAM1",
+      "simulationFile": "Cam1.db",
+      "thing": {
+        "name": "SFN",
+        "description": "Security Fusion Node",
+        "properties": {
+          "type": "Video Processing Framework"
+        }
+      },
+      "observedProperties": {
+         
+          "name": "CDL-Estimation",
+          "description": "Estimation of Crowd-Density-Local events",
+          "definition": "http://link-property-definition.com"
+      },
+      "sensor": {
+        "name": "Camera",
+        "description": "RGB Video Sensor (Note: location coordinates will be stored in the \"ObservedArea\" property of the Datastream)",
+        "encodingType": "application/pdf",
+        "metadata": "http://link-camera-datasheet.pdf"
+      },
+      "datastream": {
+        "name": "SFN/Camera/CDL-Estimation/CAM_1",
+        "description": "Datastream for Estimation of Crowd-Density-Local events",
+        "unitOfMeasurement": {
+          "camera_bearing": 90,
+          "camera_height": 6,
+          "camera_id": "CAM_1",
+          "camera_position": [
+            4.9492269,
+            45.798305
+          ],
+          "camera_tilt": 45,
+          "camera_type": "RGB",
+          "crowd_mask": "",
+          "flow_rois": [
+            [
+              489,
+              350,
+              1760,
+              964
+            ]
+          ],
+          "frame_roi": [
+            0,
+            300,
+            0,
+            300
+          ],
+          "gate_orientation": 180,
+          "ground_plane_orientation": 174,
+          "ground_plane_position": [
+            4.9492269,
+            45.798305
+          ],
+          "ground_plane_roi": [
+            1489,
+            678,
+            2470,
+            1953
+          ],
+          "ground_plane_size": [
+            15,
+            18
+          ],
+          "image_2_ground_plane_matrix": [
+            [
+              3.499342826389911,
+              16.553906435361828,
+              -371.0139949714318
+            ],
+            [
+              -1.1500621674599778,
+              26.24326956882418,
+              -1749.3310094921485
+            ],
+            [
+              -0.000335731735528085,
+              0.007811461395848707,
+              1
+            ]
+          ],
+          "module_types": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "ref_pt": [
+            [
+              1010,
+              781
+            ],
+            [
+              1476,
+              802
+            ],
+            [
+              960,
+              1005
+            ],
+            [
+              1531,
+              1031
+            ],
+            [
+              1062,
+              544
+            ]
+          ],
+          "state": 1,
+          "timestamp": "2019-09-23T15:38:51.189794+00:00",
+          "zone_id": "Not Set"
+        },
+        "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+        "observedArea": {
+          "coordinates": [
+            4.9492269,
+            45.798305
+          ],
+          "type": "Point"
+        }
+      }
+    },
+    {
+      "name": "CAM2",
+      "simulationFile": "Cam2.db",
+      "thing": {
+        "name": "SFN",
+        "description": "Security Fusion Node",
+        "properties": {
+          "type": "Video Processing Framework"
+        }
+      },
+      "observedProperties": {
+
+        "name": "CDL-Estimation",
+        "description": "Estimation of Crowd-Density-Local events",
+        "definition": "http://link-property-definition.com"
+      },
+      "sensor": {
+        "name": "Camera",
+        "description": "RGB Video Sensor (Note: location coordinates will be stored in the \"ObservedArea\" property of the Datastream)",
+        "encodingType": "application/pdf",
+        "metadata": "http://link-camera-datasheet.pdf"
+      },
+      "datastream": {
+        "name": "SFN/Camera/CDL-Estimation/CAM_2",
+        "description": "Datastream for Estimation of Crowd-Density-Local events",
+        "unitOfMeasurement": {
+          "camera_bearing": 90,
+          "camera_height": 6,
+          "camera_id": "CAM_2",
+          "camera_position": [
+            4.9492388,
+            45.7977816
+          ],
+          "camera_tilt": 45,
+          "camera_type": "RGB",
+          "crowd_mask": "",
+          "flow_rois": [
+            [
+              477,
+              345,
+              1470,
+              902
+            ]
+          ],
+          "frame_roi": [
+            0,
+            300,
+            0,
+            300
+          ],
+          "gate_orientation": 180,
+          "ground_plane_orientation": 174,
+          "ground_plane_position": [
+            -1.583031,
+            53.815381
+          ],
+          "ground_plane_roi": [
+            1514,
+            914,
+            2667,
+            2055
+          ],
+          "ground_plane_size": [
+            15,
+            30
+          ],
+          "image_2_ground_plane_matrix": [
+            [
+              32.42657157584177,
+              111.1774656997171,
+              -8675.872215873153
+            ],
+            [
+              5.887795426052015,
+              156.1833108719038,
+              -11592.19063039158
+            ],
+            [
+              0.0029438977130260085,
+              0.05216027698893019,
+              1
+            ]
+          ],
+          "module_types": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "ref_pt": [
+            [
+              697,
+              546
+            ],
+            [
+              1013,
+              546
+            ],
+            [
+              643,
+              755
+            ],
+            [
+              1065,
+              763
+            ],
+            [
+              617,
+              588
+            ]
+          ],
+          "state": 1,
+          "timestamp": "2019-09-23T15:43:58.707926+00:00",
+          "zone_id": "Not Set"
+        },
+        "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+        "observedArea": {
+          "coordinates": [
+            4.9492388,
+            45.7977816
+          ],
+          "type": "Point"
+        }
+      }
+    }
+  ]
+
+}
