@@ -193,22 +193,63 @@ services:
             ### only for module with MQTT resource manager
             # SUB_BROKER_URI: "iot.hamburg.de"
             SUB_BROKER_URI: mqttbroker
-
         networks:
           - monica_hldfad_net
 
-    #COP Things
+      #COP Things
+    simulator:
+        image: monicaproject/runsimulation:1.0
+        container_name: "simulator_${ENVTYPE}"
+        depends_on:
+          - dashboard
+          - mqttbroker
+        volumes:
+          - "./SimulatorControl.json:/app/SimulatorControl.json"
+          - "./db:/db"
+        environment:
+          MQTTServerAddress: mqttbroker
+          GOST: http://dashboard:8080/v1.0/
+          DatabasePath: "/db/"
+          SettingsFile: /app/SimulatorControl.json
+        networks:
+          - monica_hldfad_net
+
+    copupdaterCamera:
+        container_name: "COP_updater_camera_${ENVTYPE}"
+        image: "monicaproject/copupdater:0.6"
+        depends_on:
+          - mqttbroker
+          - gost
+          - copapi
+        environment:
+          - CONNECTION_STR=Host=copdb;Database=monica_wt2019;Username=postgres;Password=postgres;Port=5432
+          - GOST_PREFIX=GOST
+          - COP_AUTH_TOKEN=6ffdcacb-c485-499c-bce9-23f76d06aa36
+          - MONICA_THING_TYPE=Camera
+          - COP_API_BASE_PATH_HUB=http://copapi/
+          - COP_API_BASE_PATH=http://copapi/
+          - gostServer=http://gost:8080/v1.0/
+          - mqttServer=mqttbroker
+          - URL_PREFIX=
+          - ASPNETCORE_ENVIRONMENT=Development
+          - signalR=true
+          - aggregate=false
+          - MqttGostPrefix=GOST
+          - OGCSearch=true
+        networks:
+          - monica_hldfad_net
+          
     copdb:
-        image: "monicaproject/example-databases:CrowdCOPExample2"
-        container_name: "copdb_docker_${ENVTYPE}"
+        container_name: "COP_DB_${ENVTYPE}"
+        image: "monicaproject/crowd-cop-db-with-camera:0.2"
         ports:
           - "9998:5432"
         networks:
           - monica_hldfad_net 
           
     copapi:
+        container_name: "COP_API_${ENVTYPE}"
         image: "monicaproject/copapi:0.1"
-        container_name: "copapi_docker_${ENVTYPE}"
         ports:
             - "8800:80"
         depends_on:
@@ -225,11 +266,11 @@ services:
           - URL_PREFIX=
           - ASPNETCORE_ENVIRONMENT=Development
         networks:
-             - monica_hldfad_net   
-    
+             - monica_hldfad_net
+             
     copupdater:
-        image: monicaproject/copupdater:WristBand0.2
-        container_name: copupdater_docker_${ENVTYPE}
+        container_name: "COP_updater_wb_${ENVTYPE}"
+        image: "monicaproject/copupdater:WristBand0.2"
         depends_on:
           - mqttbroker
           - gost
@@ -248,11 +289,11 @@ services:
           - ASPNETCORE_ENVIRONMENT=Development
           - signalR=false
         networks:
-              - monica_hldfad_net   
-    
+              - monica_hldfad_net
+              
     copui:
-        image: "monicaproject/monica-cop-examples:crowdwt"
-        container_name: "copui_docker_${ENVTYPE}"
+        container_name: "COP_UI_${ENVTYPE}"
+        image: "monicaproject/monica-cop-examples:crowd-with-camera"
         ports:
           - "8900:8080"
         depends_on:
@@ -273,7 +314,7 @@ services:
           - ASPNETCORE_ENVIRONMENT=Development
           - signalR=true          
         networks:
-              - monica_hldfad_net   
+              - monica_hldfad_net  
           
 
 networks:
