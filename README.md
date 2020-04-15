@@ -18,9 +18,11 @@ The output is shown on a web map available locally.
 
 ## Disclaimer
 
-This package shall be intended as a demonstrative software suite just to concretely allow the visualization of the results and understand the MONICA solution. 
+**NOTE(1)**: This package shall be intended as a demonstrative software suite just to concretely allow the visualization of the results and understand the MONICA solution. 
 
-Such solution has been tested with success on limited number of devices (less than 1100); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
+**NOTE(2)**: Such solution has been tested with success on limited number of devices (less than 1100); therefore, it is not possible to guarantee 100% successful execution of solution on all kind of PC.
+
+**NOTE(3)**: The High Level Data Fusion component retrieves the number of registered wristbands from the GOST database. If you have a certain number of wristband registered, the system will attend message from the same number of devices (i.e.: if you register 1000 wristaband, you must execute a test with 1000 wristband. To reduce the number of devices it is mandatory to delete the GOST database and register again the wristbands).
 
 ## Repository Contents
 
